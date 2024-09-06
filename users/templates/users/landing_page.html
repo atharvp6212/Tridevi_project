@@ -1,0 +1,54 @@
+<!-- users/templates/users/landing_page.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            justify-content: space-around;
+            width: 80%;
+        }
+        .section {
+            border: 1px solid #ccc;
+            padding: 20px;
+            width: 45%;
+            text-align: center;
+        }
+        .section h2 {
+            margin-bottom: 20px;
+        }
+        .section button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="section">
+            <h2>User</h2>
+            <button onclick="location.href='{% url 'register_user' %}'">Register</button>
+            <button onclick="location.href='{% url 'login_user' %}'">Login</button>
+        </div>
+        <div class="section">
+            <h2>Owner</h2>
+            <button onclick="location.href='{% url 'register_owner' %}'">Register</button>
+            <button onclick="location.href='{% url 'login_owner' %}'">Login</button>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!-- templates/users/restaurant_owner_dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Owner Dashboard</title>
+</head>
+<body>
+    <h2>Welcome to the Restaurant Owner Dashboard</h2>
+
+    {% if restaurant %}
+        <h4>Current Information:</h4>
+        <p><strong>Name:</strong> {{ restaurant.name }}</p>
+        <p><strong>Phone:</strong> {{ restaurant.phone }}</p>
+        <p><strong>Address:</strong> {{ restaurant.address }}</p>
+        <p><strong>Type:</strong> 
+            {% if restaurant.veg %} Veg {% endif %}
+            {% if restaurant.non_veg %} Non-Veg {% endif %}
+        </p>
+        {% if restaurant.logo %}
+            <img src="{{ restaurant.logo.url }}" alt="Restaurant Logo" style="max-width: 200px;">
+        {% endif %}
+    {% endif %}
+
+    {% if restaurant %}
+        <h3>Edit Restaurant Information</h3>
+    {% else %}
+        <h3>Add Your Restaurant Information</h3>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+
+    
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!-- templates/users/grocery_owner_dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grocery Store Owner Dashboard</title>
+</head>
+<body>
+    <h2>Welcome to the Grocery Store Owner Dashboard</h2>
+
+    {% if grocery_store %}
+        <h4>Current Information:</h4>
+        <p><strong>Name:</strong> {{ grocery_store.name }}</p>
+        <p><strong>Phone:</strong> {{ grocery_store.phone }}</p>
+        <p><strong>Address:</strong> {{ grocery_store.address }}</p>
+        <p><strong>Type:</strong> {{ grocery_store.store_type }}</p>
+        {% if grocery_store.logo %}
+            <img src="{{ grocery_store.logo.url }}" alt="Grocery Store Logo" style="max-width: 200px;">
+        {% endif %}
+    {% endif %}
+
+    {% if grocery_store %}
+        <h3>Edit Grocery Store Information</h3>
+    {% else %}
+        <h3>Add Your Grocery Store Information</h3>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>
