@@ -10,6 +10,9 @@ from django.contrib.auth.decorators import login_required
 from restaurant.forms import RestaurantForm, MenuItemForm 
 from restaurant.models import Restaurant
 from django.contrib.auth import logout
+from grocery.models import GroceryStore
+from django.contrib.auth import get_user_model
+from .forms import UserProfileForm
 
 def landing_page(request):
     return render(request, 'users/landing_page.html')
@@ -57,6 +60,21 @@ def login_user(request):
         form = AuthenticationForm()
     return render(request, 'users/login.html', {'form': form})
 
+@login_required
+def edit_profile(request):
+    User = get_user_model()
+    user = get_object_or_404(User, pk=request.user.pk)
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('user_dashboard')  # Redirect to the user dashboard or any other page
+    else:
+        form = UserProfileForm(instance=user)
+
+    return render(request, 'users/edit_profile.html', {'form': form})
+
 def login_owner(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -75,8 +93,33 @@ def login_owner(request):
     return render(request, 'users/login.html', {'form': form})
 
 def user_dashboard(request):
-    return render(request, 'users/user_dashboard.html')
-
+    # Check if 'mode' is passed via GET to determine which mode the user is in.
+    mode = request.GET.get('mode', 'restaurant')  # Default to restaurant mode
+    
+    if mode == 'restaurant':
+        # Fetch all visible restaurants
+        visible_restaurants = Restaurant.objects.filter(is_visible=True)
+        context = {
+            'restaurants': visible_restaurants,
+            'mode': 'restaurant'  # Pass the mode to template for display logic
+        }
+    else:
+        # Fetch all visible grocery stores
+        visible_grocery_stores = GroceryStore.objects.filter(is_visible=True)
+        context = {
+            'grocery_stores': visible_grocery_stores,
+            'mode': 'grocery'  # Pass the mode to template for display logic
+        }
+    
+    # Fetch user information to pass to the template
+    User = get_user_model()
+    user = request.user
+    
+    context.update({
+        'user': user
+    })
+    
+    return render(request, 'users/user_dashboard.html', context)
 
 
 @login_required

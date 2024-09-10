@@ -1,12 +1,45 @@
-<!-- templates/users/user_dashboard.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
-</head>
-<body>
-    <h2>Welcome to the User Dashboard</h2>
-</body>
-</html>
+<h2>Welcome, {{ user.first_name }}!</h2>
+    
+    {% if user.profile_picture %}
+        <img src="{{ user.profile_picture.url }}" alt="Profile Picture" style="max-width: 150px; max-height: 150px;">
+    {% else %}
+        <p>No profile picture set.</p>
+    {% endif %}
+
+<div>
+    <a href="{% url 'edit_profile' %}"><button>Edit Information</button></a>
+</div>
+
+<!-- Switch Mode Buttons -->
+<div>
+    <a href="?mode=restaurant"><button>Switch to Restaurant Mode</button></a>
+    <a href="?mode=grocery"><button>Switch to Grocery Mode</button></a>
+</div>
+
+<!-- Display the List of Available and Visible Restaurants -->
+{% if mode == 'restaurant' %}
+    <h3>Available Restaurants:</h3>
+    {% if restaurants %}
+        <ul>
+            {% for restaurant in restaurants %}
+                <li>{{ restaurant.name }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No restaurants available at the moment.</p>
+    {% endif %}
+{% endif %}
+
+<!-- Display the List of Available and Visible Grocery Stores -->
+{% if mode == 'grocery' %}
+    <h3>Available Grocery Stores:</h3>
+    {% if grocery_stores %}
+        <ul>
+            {% for store in grocery_stores %}
+                <li>{{ store.name }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No grocery stores available at the moment.</p>
+    {% endif %}
+{% endif %}

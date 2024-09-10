@@ -14,4 +14,5 @@ urlpatterns = [
     path('grocery_owner_dashboard/', views.grocery_owner_dashboard, name='grocery_owner_dashboard'),
     path('edit-info/', views.edit_restaurant_info, name='edit_restaurant_info'),
     path('toggle-visibility/', views.toggle_visibility, name='toggle_visibility'), 
+    path('edit-profile/', views.edit_profile, name='edit_profile'),
 ]
