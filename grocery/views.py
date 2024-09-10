@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import GroceryStore
 from .forms import GroceryStoreForm
+from .models import Product
+from .forms import ProductForm
 
 @login_required
 def grocery_owner_dashboard(request):
@@ -16,9 +18,30 @@ def grocery_owner_dashboard(request):
         if form.is_valid():
             grocery_store = form.save(commit=False)
             grocery_store.owner = request.user
+            grocery_store.offers_gold = 'offers_gold' in request.POST 
             grocery_store.save()
             return redirect('grocery_owner_dashboard')
     else:
         form = GroceryStoreForm(instance=grocery_store)
 
     return render(request, 'users/grocery_owner_dashboard.html', {'form': form, 'grocery_store': grocery_store})
+
+def manage_product_list(request):
+    try:
+        grocery_store = request.user.grocerystore  # Correct attribute access
+    except GroceryStore.DoesNotExist:
+        return redirect('grocery_owner_dashboard')  # Handle case where user has no store
+
+    products = Product.objects.filter(grocery_store=grocery_store)
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.grocery_store = grocery_store
+            product.save()
+            return redirect('manage_product_list')
+    else:
+        form = ProductForm()
+
+    return render(request, 'grocery/manage_product_list.html', {'products': products, 'form': form})

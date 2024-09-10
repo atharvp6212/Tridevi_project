@@ -1,0 +1,28 @@
+<!-- templates/restaurant/manage_menu.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Menu</title>
+</head>
+<body>
+    <h2>Manage Menu</h2>
+
+    <h3>Current Menu Items</h3>
+    <ul>
+        {% for item in menu_items %}
+            <li>{{ item.name }} - {{ item.price }} ({{ item.is_veg|yesno:"Veg,Non-Veg" }})</li>
+        {% empty %}
+            <li>No menu items available.</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Add New Menu Item</h3>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Item</button>
+    </form>
+</body>
+</html>

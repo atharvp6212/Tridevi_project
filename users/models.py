@@ -10,3 +10,4 @@ class CustomUser(AbstractUser):
         ('grocery_owner', 'Grocery Store Owner'),
     ]
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
+    gold_member = models.BooleanField(default=False)

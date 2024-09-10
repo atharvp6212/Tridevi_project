@@ -7,8 +7,9 @@ from django.contrib.auth.decorators import login_required
 # users/views.py (update this view)
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from restaurant.forms import RestaurantForm
+from restaurant.forms import RestaurantForm, MenuItemForm 
 from restaurant.models import Restaurant
+from django.contrib.auth import logout
 
 def landing_page(request):
     return render(request, 'users/landing_page.html')
@@ -89,6 +90,7 @@ def restaurant_owner_dashboard(request):
         form = RestaurantForm(request.POST, request.FILES, instance=restaurant)
         if form.is_valid():
             restaurant = form.save(commit=False)
+            restaurant.offers_gold = 'offers_gold' in request.POST 
             restaurant.owner = request.user
             restaurant.save()
             return redirect('restaurant_owner_dashboard')
@@ -97,8 +99,11 @@ def restaurant_owner_dashboard(request):
 
     return render(request, 'users/restaurant_owner_dashboard.html', {'form': form, 'restaurant': restaurant})
 
-
 @login_required
 def grocery_owner_dashboard(request):
     return render(request, 'users/grocery_owner_dashboard.html')
+
+def user_logout(request):
+    logout(request)
+    return redirect('landing_page')
 

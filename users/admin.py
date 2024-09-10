@@ -11,7 +11,7 @@ class CustomUserAdmin(UserAdmin):
     
     # Adding only the custom field ('role') to the fieldsets
     fieldsets = UserAdmin.fieldsets + (
-        (None, {'fields': ('role',)}),  # Only add 'role', since the rest are already in UserAdmin
+        (None, {'fields': ('role', 'gold_member')}),  # Only add 'role', since the rest are already in UserAdmin
     )
 
     # Defining fields when creating a new user in the admin panel

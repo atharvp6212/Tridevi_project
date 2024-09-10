@@ -9,6 +9,8 @@
 <body>
     <h2>Welcome to the Restaurant Owner Dashboard</h2>
 
+    <a href="{% url 'manage_menu' %}">Manage Menu</a>
+
     {% if restaurant %}
         <h4>Current Information:</h4>
         <p><strong>Name:</strong> {{ restaurant.name }}</p>
@@ -17,6 +19,9 @@
         <p><strong>Type:</strong> 
             {% if restaurant.veg %} Veg {% endif %}
             {% if restaurant.non_veg %} Non-Veg {% endif %}
+        </p>
+        <p><strong>Gold Membership:</strong> 
+            {% if restaurant.offers_gold %} Yes {% else %} No {% endif %}
         </p>
         {% if restaurant.logo %}
             <img src="{{ restaurant.logo.url }}" alt="Restaurant Logo" style="max-width: 200px;">
@@ -32,9 +37,11 @@
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
+
+        <label for="offers_gold">Offer Gold Membership Discount</label>
+        <input type="checkbox" name="offers_gold" id="offers_gold" {% if restaurant.offers_gold %} checked {% endif %}>
+
         <button type="submit">Save</button>
     </form>
-
-    
 </body>
 </html>

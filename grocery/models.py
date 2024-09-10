@@ -9,6 +9,17 @@ class GroceryStore(models.Model):
     address = models.TextField()
     store_type = models.CharField(max_length=10, choices=[('veg', 'Veg'), ('non_veg', 'Non-Veg'), ('both', 'Both')])
     logo = models.ImageField(upload_to='grocery_logos/', blank=True, null=True)
+    offers_gold = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+    
+class Product(models.Model):
+    grocery_store = models.ForeignKey('GroceryStore', on_delete=models.CASCADE, related_name='products')
+    name = models.CharField(max_length=255)
+    description = models.TextField(null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    stock = models.IntegerField()
 
     def __str__(self):
         return self.name

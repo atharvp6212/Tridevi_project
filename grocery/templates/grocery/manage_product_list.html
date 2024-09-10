@@ -1,0 +1,28 @@
+<!-- templates/grocery/manage_product_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Product List</title>
+</head>
+<body>
+    <h2>Manage Product List</h2>
+
+    <h3>Current Products</h3>
+    <ul>
+        {% for product in products %}
+            <li>{{ product.name }} - {{ product.price }} (Stock: {{ product.stock }})</li>
+        {% empty %}
+            <li>No products available.</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Add New Product</h3>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Product</button>
+    </form>
+</body>
+</html>
