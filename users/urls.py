@@ -11,5 +11,7 @@ urlpatterns = [
     path('login/', views.login_user, name='login'),  # Add this for /users/login/
     path('user_dashboard/', views.user_dashboard, name='user_dashboard'),
     path('restaurant_owner_dashboard/', views.restaurant_owner_dashboard, name='restaurant_owner_dashboard'),
-    path('grocery_owner_dashboard/', views.grocery_owner_dashboard, name='grocery_owner_dashboard'), 
+    path('grocery_owner_dashboard/', views.grocery_owner_dashboard, name='grocery_owner_dashboard'),
+    path('edit-info/', views.edit_restaurant_info, name='edit_restaurant_info'),
+    path('toggle-visibility/', views.toggle_visibility, name='toggle_visibility'), 
 ]

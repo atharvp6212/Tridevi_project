@@ -81,23 +81,33 @@ def user_dashboard(request):
 
 @login_required
 def restaurant_owner_dashboard(request):
-    # Check if the restaurant exists for the current owner
-    restaurant = None
-    if hasattr(request.user, 'restaurant'):
-        restaurant = request.user.restaurant
+    restaurant = Restaurant.objects.get(owner=request.user)
+    form = RestaurantForm(instance=restaurant)
 
+    return render(request, 'users/restaurant_owner_dashboard.html', {
+        'restaurant': restaurant,
+        'form': form
+    })
+
+# Handle restaurant info editing
+def edit_restaurant_info(request):
+    restaurant = Restaurant.objects.get(owner=request.user)
     if request.method == 'POST':
         form = RestaurantForm(request.POST, request.FILES, instance=restaurant)
         if form.is_valid():
-            restaurant = form.save(commit=False)
-            restaurant.offers_gold = 'offers_gold' in request.POST 
-            restaurant.owner = request.user
-            restaurant.save()
+            form.save()
             return redirect('restaurant_owner_dashboard')
     else:
         form = RestaurantForm(instance=restaurant)
+    return render(request, 'users/restaurant_owner_dashboard.html', {'form': form})
 
-    return render(request, 'users/restaurant_owner_dashboard.html', {'form': form, 'restaurant': restaurant})
+# Handle visibility toggling
+def toggle_visibility(request):
+    restaurant = Restaurant.objects.get(owner=request.user)
+    if request.method == 'POST':
+        restaurant.is_visible = request.POST.get('is_visible') == 'on'
+        restaurant.save()
+    return redirect('restaurant_owner_dashboard')
 
 @login_required
 def grocery_owner_dashboard(request):

@@ -10,6 +10,7 @@ class GroceryStore(models.Model):
     store_type = models.CharField(max_length=10, choices=[('veg', 'Veg'), ('non_veg', 'Non-Veg'), ('both', 'Both')])
     logo = models.ImageField(upload_to='grocery_logos/', blank=True, null=True)
     offers_gold = models.BooleanField(default=False)
+    is_visible = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

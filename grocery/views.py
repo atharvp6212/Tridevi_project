@@ -8,23 +8,33 @@ from .forms import ProductForm
 
 @login_required
 def grocery_owner_dashboard(request):
-    try:
-        grocery_store = GroceryStore.objects.get(owner=request.user)
-    except GroceryStore.DoesNotExist:
-        grocery_store = None
+    grocery_store = GroceryStore.objects.get(owner=request.user)
+    form = GroceryStoreForm(instance=grocery_store)
 
+    return render(request, 'users/grocery_owner_dashboard.html', {
+        'grocery_store': grocery_store,
+        'form': form
+    })
+
+# Handle grocery info editing
+def edit_grocery_info(request):
+    grocery_store = GroceryStore.objects.get(owner=request.user)
     if request.method == 'POST':
         form = GroceryStoreForm(request.POST, request.FILES, instance=grocery_store)
         if form.is_valid():
-            grocery_store = form.save(commit=False)
-            grocery_store.owner = request.user
-            grocery_store.offers_gold = 'offers_gold' in request.POST 
-            grocery_store.save()
+            form.save()
             return redirect('grocery_owner_dashboard')
     else:
         form = GroceryStoreForm(instance=grocery_store)
+    return render(request, 'users/grocery_owner_dashboard.html', {'form': form})
 
-    return render(request, 'users/grocery_owner_dashboard.html', {'form': form, 'grocery_store': grocery_store})
+# Handle visibility toggling
+def toggle_grocery_visibility(request):
+    grocery_store = GroceryStore.objects.get(owner=request.user)
+    if request.method == 'POST':
+        grocery_store.is_visible = request.POST.get('is_visible') == 'on'
+        grocery_store.save()
+    return redirect('grocery_owner_dashboard')
 
 def manage_product_list(request):
     try:

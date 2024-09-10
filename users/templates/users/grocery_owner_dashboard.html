@@ -1,43 +1,32 @@
-<!-- templates/users/grocery_owner_dashboard.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grocery Owner Dashboard</title>
-</head>
-<body>
-    <h2>Welcome to the Grocery Owner Dashboard</h2>
+<h2>Welcome to the Grocery Store Owner Dashboard</h2>
 
-    <a href="{% url 'manage_product_list' %}">Manage Product List</a>
+<!-- Separate form for toggling visibility -->
+<h3>Visibility Settings</h3>
+<form method="POST" action="{% url 'toggle_grocery_visibility' %}">
+    {% csrf_token %}
+    <p>
+        <label for="is_visible">Visible to Customers:</label>
+        <input type="checkbox" name="is_visible" id="is_visible" {% if grocery_store.is_visible %}checked{% endif %}>
+    </p>
+    <button type="submit">Update Visibility</button>
+</form>
 
-    {% if grocery_store %}
-        <h4>Current Information:</h4>
-        <p><strong>Name:</strong> {{ grocery_store.name }}</p>
-        <p><strong>Phone:</strong> {{ grocery_store.phone }}</p>
-        <p><strong>Address:</strong> {{ grocery_store.address }}</p>
-        <p><strong>Gold Membership:</strong> 
-            {% if grocery_store.offers_gold %} Yes {% else %} No {% endif %}
-        </p>
-        {% if grocery_store.logo %}
-            <img src="{{ grocery_store.logo.url }}" alt="Grocery Store Logo" style="max-width: 200px;">
-        {% endif %}
+{% if grocery_store %}
+    <h4>Current Information:</h4>
+    <p><strong>Name:</strong> {{ grocery_store.name }}</p>
+    <p><strong>Phone:</strong> {{ grocery_store.phone }}</p>
+    <p><strong>Address:</strong> {{ grocery_store.address }}</p>
+    <p><strong>Type:</strong> {{ grocery_store.store_type }}</p>
+    {% if grocery_store.logo %}
+        <img src="{{ grocery_store.logo.url }}" alt="Store Logo" style="max-width: 200px;">
     {% endif %}
+{% endif %}
 
-    {% if grocery_store %}
-        <h3>Edit Grocery Store Information</h3>
-    {% else %}
-        <h3>Add Your Grocery Store Information</h3>
-    {% endif %}
+<!-- Separate form for editing information -->
+<h3>Edit Store Information</h3>
+<form method="POST" enctype="multipart/form-data" action="{% url 'edit_grocery_info' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
 
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-
-        <label for="offers_gold">Offer Gold Membership Discount</label>
-        <input type="checkbox" name="offers_gold" id="offers_gold" {% if grocery_store.offers_gold %} checked {% endif %}>
-
-        <button type="submit">Save</button>
-    </form>
-</body>
-</html>

@@ -1,47 +1,36 @@
-<!-- templates/users/restaurant_owner_dashboard.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurant Owner Dashboard</title>
-</head>
-<body>
-    <h2>Welcome to the Restaurant Owner Dashboard</h2>
+<h2>Welcome to the Restaurant Owner Dashboard</h2>
 
-    <a href="{% url 'manage_menu' %}">Manage Menu</a>
+<!-- Separate form for toggling visibility -->
+<h3>Visibility Settings</h3>
+<form method="POST" action="{% url 'toggle_visibility' %}">
+    {% csrf_token %}
+    <p>
+        <label for="is_visible">Visible to Customers:</label>
+        <input type="checkbox" name="is_visible" id="is_visible" {% if restaurant.is_visible %}checked{% endif %}>
+    </p>
+    <button type="submit">Update Visibility</button>
+</form>
 
-    {% if restaurant %}
-        <h4>Current Information:</h4>
-        <p><strong>Name:</strong> {{ restaurant.name }}</p>
-        <p><strong>Phone:</strong> {{ restaurant.phone }}</p>
-        <p><strong>Address:</strong> {{ restaurant.address }}</p>
-        <p><strong>Type:</strong> 
-            {% if restaurant.veg %} Veg {% endif %}
-            {% if restaurant.non_veg %} Non-Veg {% endif %}
-        </p>
-        <p><strong>Gold Membership:</strong> 
-            {% if restaurant.offers_gold %} Yes {% else %} No {% endif %}
-        </p>
-        {% if restaurant.logo %}
-            <img src="{{ restaurant.logo.url }}" alt="Restaurant Logo" style="max-width: 200px;">
-        {% endif %}
+{% if restaurant %}
+    <h4>Current Information:</h4>
+    <p><strong>Name:</strong> {{ restaurant.name }}</p>
+    <p><strong>Phone:</strong> {{ restaurant.phone }}</p>
+    <p><strong>Address:</strong> {{ restaurant.address }}</p>
+    <p><strong>Type:</strong> 
+        {% if restaurant.veg %} Veg {% endif %}
+        {% if restaurant.non_veg %} Non-Veg {% endif %}
+    </p>
+    {% if restaurant.logo %}
+        <img src="{{ restaurant.logo.url }}" alt="Restaurant Logo" style="max-width: 200px;">
     {% endif %}
+{% endif %}
 
-    {% if restaurant %}
-        <h3>Edit Restaurant Information</h3>
-    {% else %}
-        <h3>Add Your Restaurant Information</h3>
-    {% endif %}
+<!-- Separate form for editing information -->
+<h3>Edit Restaurant Information</h3>
+<form method="POST" enctype="multipart/form-data" action="{% url 'edit_restaurant_info' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
 
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
 
-        <label for="offers_gold">Offer Gold Membership Discount</label>
-        <input type="checkbox" name="offers_gold" id="offers_gold" {% if restaurant.offers_gold %} checked {% endif %}>
-
-        <button type="submit">Save</button>
-    </form>
-</body>
-</html>
