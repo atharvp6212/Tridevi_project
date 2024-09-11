@@ -55,3 +55,12 @@ def manage_product_list(request):
         form = ProductForm()
 
     return render(request, 'grocery/manage_product_list.html', {'products': products, 'form': form})
+
+def grocery_detail(request, grocery_id):
+    grocery_store = get_object_or_404(GroceryStore, id=grocery_id)
+    products = Product.objects.filter(grocery_store=grocery_store)  # Fetch store's products
+    context = {
+        'grocery_store': grocery_store,
+        'products': products,
+    }
+    return render(request, 'grocery/grocery_detail.html', context)

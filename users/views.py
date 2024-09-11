@@ -4,7 +4,6 @@ from django.contrib.auth import login, authenticate
 from .forms import UserRegistrationForm, OwnerRegistrationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-# users/views.py (update this view)
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from restaurant.forms import RestaurantForm, MenuItemForm 

@@ -1,0 +1,12 @@
+<!-- grocery/grocery_detail.html -->
+<h1>{{ grocery_store.name }}</h1>
+<p>{{ grocery_store.description }}</p>
+<p>Location: {{ grocery_store.location }}</p>
+<p>Gold Membership: {% if grocery_store.is_gold %} Available {% else %} Not Available {% endif %}</p>
+
+<h2>Products</h2>
+<ul>
+    {% for product in products %}
+        <li>{{ product.name }} - ${{ product.price }} ({{ product.stock }} available)</li>
+    {% endfor %}
+</ul>

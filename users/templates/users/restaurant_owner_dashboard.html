@@ -1,5 +1,13 @@
 <h2>Welcome to the Restaurant Owner Dashboard</h2>
 
+<p>
+    <a href="{% url 'logout' %}">Logout</a>
+</p>
+
+<p>
+    <a href="{% url 'manage_menu' %}">Update Menu</a>
+</p>
+
 <!-- Separate form for toggling visibility -->
 <h3>Visibility Settings</h3>
 <form method="POST" action="{% url 'toggle_visibility' %}">
@@ -25,12 +33,13 @@
     {% endif %}
 {% endif %}
 
-<!-- Separate form for editing information -->
 <h3>Edit Restaurant Information</h3>
 <form method="POST" enctype="multipart/form-data" action="{% url 'edit_restaurant_info' %}">
     {% csrf_token %}
     {{ form.as_p }}
+
     <button type="submit">Save</button>
 </form>
+
 
 

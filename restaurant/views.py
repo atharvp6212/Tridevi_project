@@ -1,5 +1,5 @@
 # restaurant/views.py
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Restaurant
 from .forms import RestaurantForm
 from django.contrib.auth.decorators import login_required
@@ -48,3 +48,12 @@ def manage_menu(request):
         form = MenuItemForm()
 
     return render(request, 'restaurant/manage_menu.html', {'menu_items': menu_items, 'form': form})
+
+def restaurant_detail(request, restaurant_id):
+    restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+    menu_items = MenuItem.objects.filter(restaurant=restaurant)  # Fetch restaurant's menu
+    context = {
+        'restaurant': restaurant,
+        'menu_items': menu_items,
+    }
+    return render(request, 'restaurant/restaurant_detail.html', context)

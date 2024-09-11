@@ -1,6 +1,7 @@
 # users/urls.py
 from django.urls import path
 from . import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', views.landing_page, name='landing_page'),
@@ -15,4 +16,5 @@ urlpatterns = [
     path('edit-info/', views.edit_restaurant_info, name='edit_restaurant_info'),
     path('toggle-visibility/', views.toggle_visibility, name='toggle_visibility'), 
     path('edit-profile/', views.edit_profile, name='edit_profile'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]

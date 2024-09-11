@@ -1,0 +1,12 @@
+<!-- restaurant/restaurant_detail.html -->
+<h1>{{ restaurant.name }}</h1>
+<p>{{ restaurant.description }}</p>
+<p>Location: {{ restaurant.location }}</p>
+<p>Gold Membership: {% if restaurant.is_gold %} Available {% else %} Not Available {% endif %}</p>
+
+<h2>Menu</h2>
+<ul>
+    {% for item in menu_items %}
+        <li>{{ item.name }} - ${{ item.price }}</li>
+    {% endfor %}
+</ul>

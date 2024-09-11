@@ -1,4 +1,10 @@
 <h2>Welcome to the Grocery Store Owner Dashboard</h2>
+<p>
+    <a href="{% url 'logout' %}">Logout</a>
+</p>
+<p>
+    <a href="{% url 'manage_product_list' %}">Update Menu</a>
+</p>
 
 <!-- Separate form for toggling visibility -->
 <h3>Visibility Settings</h3>
@@ -22,11 +28,13 @@
     {% endif %}
 {% endif %}
 
-<!-- Separate form for editing information -->
 <h3>Edit Store Information</h3>
 <form method="POST" enctype="multipart/form-data" action="{% url 'edit_grocery_info' %}">
     {% csrf_token %}
     {{ form.as_p }}
+
+
     <button type="submit">Save</button>
 </form>
+
 
