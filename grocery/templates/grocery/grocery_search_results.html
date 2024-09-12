@@ -1,0 +1,11 @@
+<h2>Grocery Store Search Results</h2>
+
+{% if results %}
+    <ul>
+        {% for grocery_store in results %}
+            <li><a href="{% url 'grocery_detail' grocery_store.id %}">{{ grocery_store.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No grocery stores found matching your search query.</p>
+{% endif %}

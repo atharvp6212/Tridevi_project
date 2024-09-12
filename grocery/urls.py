@@ -12,4 +12,5 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('grocery/<int:grocery_id>/', views.grocery_detail, name='grocery_detail'),
     path('grocery/<int:grocery_id>/reviews/', views.grocery_reviews, name='grocery_reviews'),
+    path('search/', views.grocery_search, name='grocery_search'),
 ]

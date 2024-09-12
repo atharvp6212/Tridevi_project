@@ -10,7 +10,7 @@ class RestaurantForm(forms.ModelForm):
 class MenuItemForm(forms.ModelForm):
     class Meta:
         model = MenuItem
-        fields = ['name', 'description', 'price', 'is_veg']
+        fields = ['name', 'description', 'price', 'is_veg', 'category']
         
 class RestaurantReviewForm(forms.ModelForm):
     class Meta:

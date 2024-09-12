@@ -1,4 +1,3 @@
-<!-- templates/restaurant/manage_menu.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,17 +11,24 @@
     <h3>Current Menu Items</h3>
     <ul>
         {% for item in menu_items %}
-            <li>{{ item.name }} - {{ item.price }} ({{ item.is_veg|yesno:"Veg,Non-Veg" }})</li>
+            <li>
+                {{ item.name }} - {{ item.price }} ({{ item.is_veg|yesno:"Veg,Non-Veg" }}) - {{ item.category }}
+                <a href="{% url 'manage_menu_edit' item.id %}">Edit</a>  <!-- Edit link -->
+            </li>
         {% empty %}
             <li>No menu items available.</li>
         {% endfor %}
     </ul>
 
-    <h3>Add New Menu Item</h3>
+    <h3>{% if editing_item %}Edit Menu Item{% else %}Add New Menu Item{% endif %}</h3>
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Add Item</button>
+        <button type="submit">{% if editing_item %}Save Changes{% else %}Add Item{% endif %}</button>
     </form>
+
+    {% if editing_item %}
+        <a href="{% url 'manage_menu' %}">Cancel Edit</a>  <!-- Option to cancel editing -->
+    {% endif %}
 </body>
 </html>

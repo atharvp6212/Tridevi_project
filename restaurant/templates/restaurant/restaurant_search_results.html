@@ -1,0 +1,11 @@
+<h2>Restaurant Search Results</h2>
+
+{% if results %}
+    <ul>
+        {% for restaurant in results %}
+            <li><a href="{% url 'restaurant_detail' restaurant.id %}">{{ restaurant.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No restaurants found matching your search query.</p>
+{% endif %}

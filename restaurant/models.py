@@ -24,6 +24,7 @@ class MenuItem(models.Model):
     description = models.TextField(null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     is_veg = models.BooleanField(default=True)
+    category = models.CharField(max_length=100, default='general')
 
     def __str__(self):
         return self.name

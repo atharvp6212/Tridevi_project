@@ -1,14 +1,28 @@
-<!-- restaurant/restaurant_detail.html -->
-<h1>{{ restaurant.name }}</h1>
-<p>{{ restaurant.description }}</p>
-<p><strong>Address:</strong> {{ restaurant.address }}</p>
-<p>Gold Membership: {% if restaurant.is_gold %} Available {% else %} Not Available {% endif %}</p>
-<p>Working Hours: {{ restaurant.working_hours }}</p>
-<a href="{% url 'restaurant_reviews' restaurant.id %}">Reviews</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ restaurant.name }} - Details</title>
+</head>
+<body>
+    <h1>{{ restaurant.name }}</h1>
+    <p>{{ restaurant.description }}</p>
+    <p><strong>Address:</strong> {{ restaurant.address }}</p>
+    <p>Gold Membership: {% if restaurant.is_gold %} Available {% else %} Not Available {% endif %}</p>
+    <p>Working Hours: {{ restaurant.working_hours }}</p>
+    <a href="{% url 'restaurant_reviews' restaurant.id %}">Reviews</a>
 
-<h2>Menu</h2>
-<ul>
-    {% for item in menu_items %}
-        <li>{{ item.name }} - ${{ item.price }}</li>
+    <h2>Menu</h2>
+    {% for category, items in grouped_menu_items.items %}
+        <h3>{{ category }}</h3>
+        <ul>
+            {% for item in items %}
+                <li>{{ item.name }} - ${{ item.price }}{% if item.is_veg %} (Veg){% else %} (Non-Veg){% endif %}</li>
+            {% endfor %}
+        </ul>
+    {% empty %}
+        <p>No menu items available.</p>
     {% endfor %}
-</ul>
+</body>
+</html>

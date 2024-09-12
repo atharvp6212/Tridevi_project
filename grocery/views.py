@@ -86,3 +86,12 @@ def grocery_reviews(request, grocery_id):
         'form': form  # Include the form in the context
     }
     return render(request, 'grocery/grocery_reviews.html', context)
+
+def grocery_search(request):
+    query = request.GET.get('q')
+    if query:
+        results = GroceryStore.objects.filter(name__icontains=query)  # Searches by name
+    else:
+        results = GroceryStore.objects.all()
+
+    return render(request, 'grocery/grocery_search_results.html', {'results': results})

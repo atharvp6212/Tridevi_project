@@ -1,54 +1,4 @@
 {% comment %} <h2>Welcome, {{ user.first_name }}!</h2>
-    
-    {% if user.profile_picture %}
-        <img src="{{ user.profile_picture.url }}" alt="Profile Picture" style="max-width: 150px; max-height: 150px;">
-    {% else %}
-        <p>No profile picture set.</p>
-    {% endif %}
-
-    <p>
-        <a href="{% url 'logout' %}">Logout</a>
-    </p>
-
-<div>
-    <a href="{% url 'edit_profile' %}"><button>Edit Information</button></a>
-</div>
-
-<!-- Switch Mode Buttons -->
-<div>
-    <a href="?mode=restaurant"><button>Switch to Restaurant Mode</button></a>
-    <a href="?mode=grocery"><button>Switch to Grocery Mode</button></a>
-</div>
-
-<!-- Display the List of Available and Visible Restaurants -->
-{% if mode == 'restaurant' %}
-    <h3>Available Restaurants:</h3>
-    {% if restaurants %}
-        <ul>
-            {% for restaurant in restaurants %}
-                <li>{{ restaurant.name }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No restaurants available at the moment.</p>
-    {% endif %}
-{% endif %}
-
-<!-- Display the List of Available and Visible Grocery Stores -->
-{% if mode == 'grocery' %}
-    <h3>Available Grocery Stores:</h3>
-    {% if grocery_stores %}
-        <ul>
-            {% for store in grocery_stores %}
-                <li>{{ store.name }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No grocery stores available at the moment.</p>
-    {% endif %}
-{% endif %} {% endcomment %}
-
-<h2>Welcome, {{ user.first_name }}!</h2>
 
 {% if user.profile_picture %}
     <img src="{{ user.profile_picture.url }}" alt="Profile Picture" style="max-width: 150px; max-height: 150px;">
@@ -73,6 +23,10 @@
 <!-- Display the List of Available and Visible Restaurants -->
 {% if mode == 'restaurant' %}
     <h3>Available Restaurants:</h3>
+    <form method="GET" action="{% url 'restaurant_search' %}">
+        <input type="text" name="q" placeholder="Search for restaurants...">
+        <button type="submit">Search</button>
+    </form>    
     {% if restaurants %}
         <ul>
             {% for restaurant in restaurants %}
@@ -87,6 +41,10 @@
 <!-- Display the List of Available and Visible Grocery Stores -->
 {% if mode == 'grocery' %}
     <h3>Available Grocery Stores:</h3>
+    <form method="GET" action="{% url 'grocery_search' %}">
+        <input type="text" name="q" placeholder="Search for grocery stores...">
+        <button type="submit">Search</button>
+    </form>    
     {% if grocery_stores %}
         <ul>
             {% for store in grocery_stores %}
@@ -97,4 +55,99 @@
         <p>No grocery stores available at the moment.</p>
     {% endif %}
 {% endif %}
+ {% endcomment %}
 
+ <h2>Welcome, {{ user.first_name }}!</h2>
+
+ {% if user.profile_picture %}
+     <img src="{{ user.profile_picture.url }}" alt="Profile Picture" style="max-width: 150px; max-height: 150px;">
+ {% else %}
+     <p>No profile picture set.</p>
+ {% endif %}
+ 
+ <p>
+     <a href="{% url 'logout' %}">Logout</a>
+ </p>
+ 
+ <div>
+     <a href="{% url 'edit_profile' %}"><button>Edit Information</button></a>
+ </div>
+ 
+ <!-- Switch Mode Buttons -->
+ <div>
+     <a href="?mode=restaurant"><button>Switch to Restaurant Mode</button></a>
+     <a href="?mode=grocery"><button>Switch to Grocery Mode</button></a>
+ </div>
+ 
+ <!-- Display the List of Available and Visible Restaurants -->
+ {% if mode == 'restaurant' %}
+     <h3>Available Restaurants:</h3>
+     
+     <!-- Search Form -->
+     <form method="GET" action="{% url 'restaurant_search' %}">
+         <input type="text" name="q" placeholder="Search for restaurants...">
+         <button type="submit">Search</button>
+     </form>
+ 
+     <!-- Veg-Only Filter Checkbox -->
+     <label>
+         <input type="checkbox" id="vegOnlyCheckbox"> Show Veg Only
+     </label>
+ 
+     <!-- Restaurant List -->
+     {% if restaurants %}
+         <ul id="restaurantList">
+             {% for restaurant in restaurants %}
+                 <li class="restaurant-item" data-veg="{{ restaurant.veg }}">
+                     <a href="{% url 'restaurant_detail' restaurant.id %}">{{ restaurant.name }}</a>
+                     {% if restaurant.veg %}
+                         <span>(Veg)</span>
+                     {% elif restaurant.non_veg %}
+                         <span>(Non-Veg)</span>
+                     {% endif %}
+                 </li>
+             {% endfor %}
+         </ul>
+     {% else %}
+         <p>No restaurants available at the moment.</p>
+     {% endif %}
+ {% endif %}
+ 
+ <!-- Display the List of Available and Visible Grocery Stores -->
+ {% if mode == 'grocery' %}
+     <h3>Available Grocery Stores:</h3>
+     <form method="GET" action="{% url 'grocery_search' %}">
+         <input type="text" name="q" placeholder="Search for grocery stores...">
+         <button type="submit">Search</button>
+     </form>
+     {% if grocery_stores %}
+         <ul>
+             {% for store in grocery_stores %}
+                 <li><a href="{% url 'grocery_detail' store.id %}">{{ store.name }}</a></li>
+             {% endfor %}
+         </ul>
+     {% else %}
+         <p>No grocery stores available at the moment.</p>
+     {% endif %}
+ {% endif %}
+ 
+ <script>
+     // JavaScript to handle veg-only filtering
+     document.getElementById('vegOnlyCheckbox').addEventListener('change', function() {
+         const vegOnly = this.checked;
+         const restaurantItems = document.querySelectorAll('.restaurant-item');
+ 
+         restaurantItems.forEach(function(item) {
+             // Check if the restaurant is vegetarian
+             const isVeg = item.getAttribute('data-veg') === 'True';
+             if (vegOnly && !isVeg) {
+                 // Hide non-veg restaurants
+                 item.style.display = 'none';
+             } else {
+                 // Show all restaurants or only veg ones if filter is not checked
+                 item.style.display = '';
+             }
+         });
+     });
+ </script>
+ 
