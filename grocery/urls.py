@@ -11,4 +11,5 @@ urlpatterns = [
     path('toggle-visibility/', views.toggle_grocery_visibility, name='toggle_grocery_visibility'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('grocery/<int:grocery_id>/', views.grocery_detail, name='grocery_detail'),
+    path('grocery/<int:grocery_id>/reviews/', views.grocery_reviews, name='grocery_reviews'),
 ]

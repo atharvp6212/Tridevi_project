@@ -1,10 +1,9 @@
 # restaurant/views.py
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Restaurant
 from .forms import RestaurantForm
 from django.contrib.auth.decorators import login_required
-from .models import MenuItem
-from .forms import MenuItemForm
+from .models import MenuItem, RestaurantReview, Restaurant
+from .forms import MenuItemForm, RestaurantReviewForm
 
 @login_required
 def restaurant_dashboard(request):
@@ -55,5 +54,27 @@ def restaurant_detail(request, restaurant_id):
     context = {
         'restaurant': restaurant,
         'menu_items': menu_items,
+        'reviews': RestaurantReview.objects.filter(restaurant=restaurant)
     }
     return render(request, 'restaurant/restaurant_detail.html', context)
+
+def restaurant_reviews(request, restaurant_id):
+    restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+    reviews = RestaurantReview.objects.filter(restaurant=restaurant)
+    if request.method == 'POST':
+        form = RestaurantReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.customer = request.user  # Assign the logged-in user
+            review.restaurant = restaurant  # Link review to the restaurant
+            review.save()
+            return redirect('restaurant_reviews', restaurant_id=restaurant.id)  # Refresh the page after submission
+    else:
+        form = RestaurantReviewForm()
+
+    context = {
+        'restaurant': restaurant,
+        'reviews': reviews,
+        'form': form  # Include the form in the context
+    }
+    return render(request, 'restaurant/restaurant_reviews.html', context)

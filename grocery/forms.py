@@ -1,7 +1,7 @@
 # grocery/forms.py
 from django import forms
 from .models import GroceryStore
-from .models import Product
+from .models import Product,GroceryReview, GroceryStore
 
 class GroceryStoreForm(forms.ModelForm):
     class Meta:
@@ -12,3 +12,8 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'description', 'price', 'stock']
+        
+class GroceryReviewForm(forms.ModelForm):
+    class Meta:
+        model = GroceryReview
+        fields = ['review_text', 'rating']

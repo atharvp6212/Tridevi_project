@@ -1,8 +1,10 @@
 <!-- restaurant/restaurant_detail.html -->
 <h1>{{ restaurant.name }}</h1>
 <p>{{ restaurant.description }}</p>
-<p>Location: {{ restaurant.location }}</p>
+<p><strong>Address:</strong> {{ restaurant.address }}</p>
 <p>Gold Membership: {% if restaurant.is_gold %} Available {% else %} Not Available {% endif %}</p>
+<p>Working Hours: {{ restaurant.working_hours }}</p>
+<a href="{% url 'restaurant_reviews' restaurant.id %}">Reviews</a>
 
 <h2>Menu</h2>
 <ul>

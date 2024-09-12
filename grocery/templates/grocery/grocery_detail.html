@@ -1,8 +1,10 @@
 <!-- grocery/grocery_detail.html -->
 <h1>{{ grocery_store.name }}</h1>
 <p>{{ grocery_store.description }}</p>
-<p>Location: {{ grocery_store.location }}</p>
+<p><strong>Address:</strong> {{ store.address }}</p>
 <p>Gold Membership: {% if grocery_store.is_gold %} Available {% else %} Not Available {% endif %}</p>
+<p>Working Hours: {{ grocery_store.working_hours }}</p>
+<a href="{% url 'grocery_reviews' grocery_store.id %}">Reviews</a>
 
 <h2>Products</h2>
 <ul>
