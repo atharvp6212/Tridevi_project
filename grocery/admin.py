@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import GroceryStore, Product
+from .models import GroceryStore, Product, GroceryReview
 
 # Define an inline admin descriptor for Product model
 # which acts a bit like a reverse ForeignKey to GroceryStore.
@@ -23,3 +23,10 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ['name', 'grocery_store__name']
 
 admin.site.register(Product, ProductAdmin)
+
+class GroceryReviewAdmin(admin.ModelAdmin):
+    list_display = ('grocery_store', 'customer', 'rating', 'review_text', 'created_at')
+    search_fields = ('grocery_store__name', 'customer__username', 'review_text')
+    list_filter = ('rating', 'created_at')
+
+admin.site.register(GroceryReview, GroceryReviewAdmin)

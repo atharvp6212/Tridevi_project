@@ -47,3 +47,4 @@ class GroceryReview(models.Model):
 
     def __str__(self):
         return f"{self.customer.username}'s review for {self.grocery_store.name}"
+    

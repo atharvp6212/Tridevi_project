@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Restaurant, MenuItem
+from .models import Restaurant, MenuItem, RestaurantReview
 
 # Define an inline admin descriptor for MenuItem model
 class MenuItemInline(admin.TabularInline):
@@ -22,3 +22,10 @@ class MenuItemAdmin(admin.ModelAdmin):
     search_fields = ['name', 'restaurant__name']
 
 admin.site.register(MenuItem, MenuItemAdmin)
+
+class RestaurantReviewAdmin(admin.ModelAdmin):
+    list_display = ('restaurant', 'customer', 'rating', 'review_text', 'created_at')
+    search_fields = ('restaurant__name', 'customer__username', 'review_text')
+    list_filter = ('rating', 'created_at')
+
+admin.site.register(RestaurantReview, RestaurantReviewAdmin)
