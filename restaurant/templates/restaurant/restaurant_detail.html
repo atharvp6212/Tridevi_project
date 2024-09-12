@@ -13,16 +13,25 @@
     <p>Working Hours: {{ restaurant.working_hours }}</p>
     <a href="{% url 'restaurant_reviews' restaurant.id %}">Reviews</a>
 
+    
+
     <h2>Menu</h2>
-    {% for category, items in grouped_menu_items.items %}
-        <h3>{{ category }}</h3>
-        <ul>
-            {% for item in items %}
-                <li>{{ item.name }} - ${{ item.price }}{% if item.is_veg %} (Veg){% else %} (Non-Veg){% endif %}</li>
-            {% endfor %}
-        </ul>
-    {% empty %}
-        <p>No menu items available.</p>
-    {% endfor %}
+    <form method="POST" action="{% url 'place_restaurant_order' restaurant.id %}">
+        {% csrf_token %}
+        {% for category, items in grouped_menu_items.items %}
+            <h3>{{ category }}</h3>
+            <ul>
+                {% for item in items %}
+                    <li>
+                        {{ item.name }} - ${{ item.price }}{% if item.is_veg %} (Veg){% else %} (Non-Veg){% endif %}
+                        <input type="number" name="item_{{ item.id }}" min="0" placeholder="Quantity" value="0">
+                    </li>
+                {% endfor %}
+            </ul>
+        {% empty %}
+            <p>No menu items available.</p>
+        {% endfor %}
+        <button type="submit">Place Order</button>
+    </form>
 </body>
 </html>

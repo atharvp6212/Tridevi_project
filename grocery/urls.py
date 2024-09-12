@@ -13,4 +13,6 @@ urlpatterns = [
     path('grocery/<int:grocery_id>/', views.grocery_detail, name='grocery_detail'),
     path('grocery/<int:grocery_id>/reviews/', views.grocery_reviews, name='grocery_reviews'),
     path('search/', views.grocery_search, name='grocery_search'),
+    path('grocery/orders/', views.manage_grocery_orders, name='manage_grocery_orders'),
+    path('grocery/<int:grocery_id>/order/', views.place_grocery_order, name='place_grocery_order'),
 ]

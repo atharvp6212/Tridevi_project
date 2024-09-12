@@ -1,6 +1,6 @@
 # restaurant/forms.py
 from django import forms
-from .models import MenuItem,RestaurantReview, Restaurant
+from .models import MenuItem,RestaurantReview, Restaurant, RestaurantOrder, OrderItem
 
 class RestaurantForm(forms.ModelForm):
     class Meta:
@@ -16,3 +16,13 @@ class RestaurantReviewForm(forms.ModelForm):
     class Meta:
         model = RestaurantReview
         fields = ['review_text', 'rating']
+        
+class RestaurantOrderForm(forms.ModelForm):
+    class Meta:
+        model = RestaurantOrder
+        fields = ['customer', 'restaurant', 'total_price']  # You can customize as needed
+
+class OrderItemForm(forms.ModelForm):
+    class Meta:
+        model = OrderItem
+        fields = ['menu_item', 'quantity']

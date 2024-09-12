@@ -2,8 +2,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RestaurantForm
 from django.contrib.auth.decorators import login_required
-from .models import MenuItem, RestaurantReview, Restaurant
-from .forms import MenuItemForm, RestaurantReviewForm
+from .models import MenuItem, RestaurantReview, Restaurant, RestaurantOrder, OrderItem
+from .forms import MenuItemForm, RestaurantReviewForm, RestaurantOrderForm, OrderItemForm
 from itertools import groupby
 from operator import attrgetter
 
@@ -100,3 +100,55 @@ def restaurant_search(request):
         results = Restaurant.objects.all()
 
     return render(request, 'restaurant/restaurant_search_results.html', {'results': results})
+
+def place_restaurant_order(request, restaurant_id):
+    if request.method == 'POST':
+        restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+        order = RestaurantOrder.objects.create(customer=request.user, restaurant=restaurant)
+        
+        total_price = 0
+        for key, value in request.POST.items():
+            if key.startswith('item_'):
+                item_id = key.split('_')[1]
+                quantity = int(value)
+                if quantity > 0:
+                    item = get_object_or_404(MenuItem, id=item_id)
+                    price = item.price * quantity
+                    total_price += price
+                    OrderItem.objects.create(order=order, menu_item=item, quantity=quantity, price=price)
+        
+        order.total_price = total_price
+        order.save()
+        
+        return redirect('restaurant_detail', restaurant_id=restaurant.id)
+    
+def manage_restaurant_orders(request):
+    restaurant = get_object_or_404(Restaurant, owner=request.user)
+    
+    pending_orders = RestaurantOrder.objects.filter(restaurant=restaurant, status='Pending')
+    completed_orders = RestaurantOrder.objects.filter(restaurant=restaurant, status='Completed')
+
+    # Prepare a list of (order, items) tuples
+    pending_order_items = [(order, OrderItem.objects.filter(order=order)) for order in pending_orders]
+    completed_order_items = [(order, OrderItem.objects.filter(order=order)) for order in completed_orders]
+
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        action = request.POST.get('action')
+        
+        if order_id and action in ['accept', 'reject']:
+            order = get_object_or_404(RestaurantOrder, id=order_id, restaurant=restaurant)
+            if action == 'accept':
+                order.status = 'Completed'
+            elif action == 'reject':
+                order.delete()
+            
+            order.save()
+            return redirect('manage_restaurant_orders')
+    
+    context = {
+        'pending_orders': pending_order_items,
+        'completed_orders': completed_order_items,
+    }
+    return render(request, 'restaurant/manage_restaurant_orders.html', context)
+

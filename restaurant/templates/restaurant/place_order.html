@@ -1,0 +1,15 @@
+<!-- templates/restaurant/place_order.html -->
+<h1>Place Order at {{ restaurant.name }}</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ order_form.as_p }}
+    
+    {% for form in item_forms %}
+        <div>
+            {{ form.as_p }}
+        </div>
+    {% endfor %}
+    
+    <button type="submit">Place Order</button>
+</form>

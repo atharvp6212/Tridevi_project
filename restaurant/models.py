@@ -2,6 +2,7 @@
 from django.db import models
 from users.models import CustomUser
 from django.conf import settings
+from django.contrib.auth.models import User
 
 class Restaurant(models.Model):
     owner = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='restaurant')
@@ -38,3 +39,18 @@ class RestaurantReview(models.Model):
 
     def __str__(self):
         return f"{self.customer.username}'s review for {self.restaurant.name}"
+    
+
+class RestaurantOrder(models.Model):
+    customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    items = models.ManyToManyField(MenuItem, through='OrderItem')
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    order_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, default='Pending')  # e.g., Pending, Completed
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(RestaurantOrder, on_delete=models.CASCADE)
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)

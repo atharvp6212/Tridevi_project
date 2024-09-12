@@ -1,14 +1,28 @@
 <!-- grocery/grocery_detail.html -->
 <h1>{{ grocery_store.name }}</h1>
 <p>{{ grocery_store.description }}</p>
-<p><strong>Address:</strong> {{ store.address }}</p>
+<p><strong>Address:</strong> {{ grocery_store.address }}</p>
 <p>Gold Membership: {% if grocery_store.is_gold %} Available {% else %} Not Available {% endif %}</p>
 <p>Working Hours: {{ grocery_store.working_hours }}</p>
 <a href="{% url 'grocery_reviews' grocery_store.id %}">Reviews</a>
 
 <h2>Products</h2>
-<ul>
-    {% for product in products %}
-        <li>{{ product.name }} - ${{ product.price }} ({{ product.stock }} available)</li>
-    {% endfor %}
-</ul>
+<form method="POST" action="{% url 'place_grocery_order' grocery_id=grocery_store.id %}">
+    {% csrf_token %}
+    <h2>Order from {{ grocery.name }}</h2>
+    <!-- Example to debug in template -->
+    <p>Grocery ID: {{ grocery.id }}</p>
+
+    <ul>
+        {% for product in products %}
+            <li>
+                <label>{{ product.name }} - ${{ product.price }}
+                    <input type="hidden" name="product_{{ product.id }}" value="{{ product.id }}">
+                    <input type="number" name="quantity_{{ product.id }}" placeholder="Quantity" min="0" value="0" required>
+                </label>
+            </li>
+        {% endfor %}
+    </ul>
+    <button type="submit">Place Order</button>
+</form>
+

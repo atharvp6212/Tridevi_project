@@ -8,6 +8,9 @@
     <a href="{% url 'manage_menu' %}">Update Menu</a>
 </p>
 
+<h2>Manage Orders</h2>
+<a href="{% url 'manage_restaurant_orders' %}">View and Manage Orders</a>
+
 <!-- Separate form for toggling visibility -->
 <h3>Visibility Settings</h3>
 <form method="POST" action="{% url 'toggle_visibility' %}">

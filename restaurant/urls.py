@@ -11,4 +11,6 @@ urlpatterns = [
     path('restaurant/<int:restaurant_id>/reviews/', views.restaurant_reviews, name='restaurant_reviews'),
     path('search/', views.restaurant_search, name='restaurant_search'),
     path('manage-menu/<int:item_id>/', views.manage_menu, name='manage_menu_edit'),
+    path('restaurant/<int:restaurant_id>/order/', views.place_restaurant_order, name='place_restaurant_order'),
+    path('restaurant/orders/', views.manage_restaurant_orders, name='manage_restaurant_orders'),
 ]

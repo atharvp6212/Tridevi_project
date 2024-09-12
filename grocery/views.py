@@ -4,7 +4,9 @@ from django.contrib.auth.decorators import login_required
 from .models import GroceryStore
 from .forms import GroceryStoreForm
 from .models import Product, GroceryReview
-from .forms import ProductForm, GroceryReviewForm
+from .forms import ProductForm, GroceryReviewForm,GroceryOrderForm, GroceryOrderItemForm
+from .models import GroceryStore,GroceryOrder, GroceryOrderItem
+from .forms import GroceryOrderForm, GroceryOrderItemForm
 
 @login_required
 def grocery_owner_dashboard(request):
@@ -36,6 +38,7 @@ def toggle_grocery_visibility(request):
         grocery_store.save()
     return redirect('grocery_owner_dashboard')
 
+@login_required
 def manage_product_list(request):
     try:
         grocery_store = request.user.grocerystore  # Correct attribute access
@@ -44,21 +47,37 @@ def manage_product_list(request):
 
     products = Product.objects.filter(grocery_store=grocery_store)
 
+    # Check if we are editing a product
+    product_id = request.GET.get('edit')
+    if product_id:
+        product = get_object_or_404(Product, id=product_id, grocery_store=grocery_store)
+        form = ProductForm(instance=product)
+    else:
+        product = None
+        form = ProductForm()
+
     if request.method == 'POST':
-        form = ProductForm(request.POST)
+        if product:
+            form = ProductForm(request.POST, instance=product)  # Update existing product
+        else:
+            form = ProductForm(request.POST)  # Add a new product
+
         if form.is_valid():
             product = form.save(commit=False)
             product.grocery_store = grocery_store
             product.save()
             return redirect('manage_product_list')
-    else:
-        form = ProductForm()
 
-    return render(request, 'grocery/manage_product_list.html', {'products': products, 'form': form})
+    return render(request, 'grocery/manage_product_list.html', {
+        'products': products,
+        'form': form,
+        'editing_product': product,
+    })
+
 
 def grocery_detail(request, grocery_id):
     grocery_store = get_object_or_404(GroceryStore, id=grocery_id)
-    products = Product.objects.filter(grocery_store=grocery_store)  # Fetch store's products
+    products = Product.objects.filter(grocery_store=grocery_store, stock__gt=25)  # Fetch store's products
     context = {
         'grocery_store': grocery_store,
         'products': products,
@@ -95,3 +114,59 @@ def grocery_search(request):
         results = GroceryStore.objects.all()
 
     return render(request, 'grocery/grocery_search_results.html', {'results': results})
+
+
+def place_grocery_order(request, grocery_id):
+    if request.method == 'POST':
+        grocery_store = get_object_or_404(GroceryStore, id=grocery_id)
+        order = GroceryOrder.objects.create(customer=request.user, store=grocery_store)
+        
+        total_price = 0
+        for key, value in request.POST.items():
+            if key.startswith('quantity_'):
+                product_id = key.split('_')[1]
+                quantity = int(value)
+                
+                if quantity > 0:  # Only process items with a quantity greater than 0
+                    product = get_object_or_404(Product, id=product_id)
+                    price = product.price * quantity
+                    total_price += price
+                    GroceryOrderItem.objects.create(order=order, product=product, quantity=quantity, price=price)
+        
+        order.total_price = total_price
+        order.save()
+        
+        return redirect('grocery_detail', grocery_id=grocery_store.id)
+
+
+
+    
+def manage_grocery_orders(request):
+    store = get_object_or_404(GroceryStore, owner=request.user)
+    
+    pending_orders = GroceryOrder.objects.filter(store=store, status='Pending')
+    completed_orders = GroceryOrder.objects.filter(store=store, status='Completed')
+
+    # Prepare a list of (order, items) tuples
+    pending_order_items = [(order, GroceryOrderItem.objects.filter(order=order)) for order in pending_orders]
+    completed_order_items = [(order, GroceryOrderItem.objects.filter(order=order)) for order in completed_orders]
+
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        action = request.POST.get('action')
+        
+        if order_id and action in ['accept', 'reject']:
+            order = get_object_or_404(GroceryOrder, id=order_id, store=store)
+            if action == 'accept':
+                order.status = 'Completed'
+            elif action == 'reject':
+                order.delete()
+            
+            order.save()
+            return redirect('manage_grocery_orders')
+    
+    context = {
+        'pending_orders': pending_order_items,
+        'completed_orders': completed_order_items,
+    }
+    return render(request, 'grocery/manage_grocery_orders.html', context)

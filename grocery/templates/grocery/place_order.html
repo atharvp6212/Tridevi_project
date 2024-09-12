@@ -1,0 +1,16 @@
+<!-- grocery/place_order.html -->
+<form method="post" action="{% url 'place_grocery_order' store.id %}">
+    {% csrf_token %}
+    <h2>Order from {{ store.name }}</h2>
+    <ul>
+        {% for product in products %}
+            <li>
+                <label>{{ product.name }} - ${{ product.price }}
+                    <input type="hidden" name="product_{{ product.id }}" value="{{ product.id }}">
+                    <input type="number" name="quantity_{{ product.id }}" placeholder="Quantity" min="1" required>
+                </label>
+            </li>
+        {% endfor %}
+    </ul>
+    <button type="submit">Place Order</button>
+</form>
