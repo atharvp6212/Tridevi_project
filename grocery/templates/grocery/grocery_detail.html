@@ -7,12 +7,9 @@
 <a href="{% url 'grocery_reviews' grocery_store.id %}">Reviews</a>
 
 <h2>Products</h2>
-<form method="POST" action="{% url 'place_grocery_order' grocery_id=grocery_store.id %}">
+<form method="POST" action="{% url 'review_order' grocery_id=grocery_store.id %}">
     {% csrf_token %}
-    <h2>Order from {{ grocery.name }}</h2>
-    <!-- Example to debug in template -->
-    <p>Grocery ID: {{ grocery.id }}</p>
-
+    <h2>Order from {{ grocery_store.name }}</h2>
     <ul>
         {% for product in products %}
             <li>
@@ -23,6 +20,5 @@
             </li>
         {% endfor %}
     </ul>
-    <button type="submit">Place Order</button>
+    <button type="submit">Add to Cart</button>
 </form>
-

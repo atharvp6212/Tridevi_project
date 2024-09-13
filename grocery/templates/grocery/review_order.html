@@ -1,0 +1,30 @@
+<h1>Review Your Order from {{ grocery_store.name }}</h1>
+<form method="POST" action="{% url 'place_grocery_order' grocery_id=grocery_store.id %}">
+    {% csrf_token %}
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product, quantity, price in order_items %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>
+                        <input type="number" name="quantity_{{ product.id }}" value="{{ quantity }}" min="0" required>
+                    </td>
+                    <td>${{ price }}</td>
+                    <td>
+                        <a href="{% url 'remove_from_cart' product.id %}">Remove</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p><strong>Total Price: ${{ total_price }}</strong></p>
+    <button type="submit">Place Order</button>
+</form>

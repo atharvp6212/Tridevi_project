@@ -9,11 +9,9 @@
     <h1>{{ restaurant.name }}</h1>
     <p>{{ restaurant.description }}</p>
     <p><strong>Address:</strong> {{ restaurant.address }}</p>
-    <p>Gold Membership: {% if restaurant.is_gold %} Available {% else %} Not Available {% endif %}</p>
+    <p>Gold Membership: {% if restaurant.offers_gold %} Available {% else %} Not Available {% endif %}</p>
     <p>Working Hours: {{ restaurant.working_hours }}</p>
     <a href="{% url 'restaurant_reviews' restaurant.id %}">Reviews</a>
-
-    
 
     <h2>Menu</h2>
     <form method="POST" action="{% url 'place_restaurant_order' restaurant.id %}">
@@ -31,7 +29,7 @@
         {% empty %}
             <p>No menu items available.</p>
         {% endfor %}
-        <button type="submit">Place Order</button>
+        <button type="submit">Add to Cart</button>
     </form>
 </body>
 </html>

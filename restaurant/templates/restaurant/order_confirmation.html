@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Your Order</title>
+</head>
+<body>
+    <h1>Confirm Your Order at {{ restaurant.name }}</h1>
+    <h2>Order Summary</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <ul>
+            {% for item in order_items %}
+                <li>
+                    {{ item.name }} - Price: ${{ item.price }}
+                    <input type="number" name="quantity_{{ item.id }}" value="{{ item.quantity }}" min="0" required>
+                    <a href="{% url 'remove_item' item.id %}">Remove</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <p><strong>Total Price: ${{ total_price }}</strong></p>
+        <button type="submit" name="update">Update Order</button>
+        <button type="submit" name="confirm">Confirm Order</button>
+    </form>
+    <a href="{% url 'restaurant_detail' restaurant.id %}">Cancel</a>
+</body>
+</html>
