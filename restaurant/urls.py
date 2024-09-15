@@ -1,6 +1,6 @@
 # urls.py in restaurant app
 from django.urls import path
-from .views import manage_menu
+from .views import manage_coupons, manage_menu
 from . import views
 from django.contrib.auth import views as auth_views
 
@@ -15,4 +15,5 @@ urlpatterns = [
     path('restaurant/orders/', views.manage_restaurant_orders, name='manage_restaurant_orders'),
     path('confirm-order/', views.confirm_order, name='confirm_order'),
     path('remove-item/<int:item_id>/', views.remove_item, name='remove_item'),
+    path('manage-coupons/', manage_coupons, name='manage_coupons'),
 ]

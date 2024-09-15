@@ -1,0 +1,23 @@
+<h1>Manage Coupons</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Coupon</button>
+</form>
+
+<h2>Existing Coupons</h2>
+<ul>
+    {% for coupon in coupons %}
+        <li>
+            {{ coupon.name }} - {{ coupon.discount_percentage }}%
+            <form method="POST" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="coupon_id" value="{{ coupon.id }}">
+                <button type="submit" name="delete_coupon">Delete</button>
+            </form>
+        </li>
+    {% empty %}
+        <li>No coupons available.</li>
+    {% endfor %}
+</ul>

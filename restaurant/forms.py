@@ -1,6 +1,6 @@
 # restaurant/forms.py
 from django import forms
-from .models import MenuItem,RestaurantReview, Restaurant, RestaurantOrder, OrderItem
+from .models import MenuItem,RestaurantReview, Restaurant, RestaurantOrder, OrderItem, Coupon
 
 class RestaurantForm(forms.ModelForm):
     class Meta:
@@ -26,3 +26,8 @@ class OrderItemForm(forms.ModelForm):
     class Meta:
         model = OrderItem
         fields = ['menu_item', 'quantity']
+        
+class CouponForm(forms.ModelForm):
+    class Meta:
+        model = Coupon
+        fields = ['name', 'discount_percentage']

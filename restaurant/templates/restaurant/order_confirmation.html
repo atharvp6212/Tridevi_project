@@ -19,7 +19,12 @@
                 </li>
             {% endfor %}
         </ul>
-        <p><strong>Total Price: ${{ total_price }}</strong></p>
+        {% if coupon %}
+            <p>Coupon Applied: {{ coupon.name }} - {{ coupon.discount_percentage }}% Discount</p>
+            <p><strong>Discounted Total Price: ${{ total_price }}</strong></p>
+        {% else %}
+            <p><strong>Total Price: ${{ total_price }}</strong></p>
+        {% endif %}
         <button type="submit" name="update">Update Order</button>
         <button type="submit" name="confirm">Confirm Order</button>
     </form>

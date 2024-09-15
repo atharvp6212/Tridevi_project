@@ -2,8 +2,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RestaurantForm
 from django.contrib.auth.decorators import login_required
-from .models import MenuItem, RestaurantReview, Restaurant, RestaurantOrder, OrderItem
-from .forms import MenuItemForm, RestaurantReviewForm, RestaurantOrderForm, OrderItemForm
+from .models import MenuItem, RestaurantReview, Restaurant, RestaurantOrder, OrderItem, Coupon
+from .forms import MenuItemForm, RestaurantReviewForm, RestaurantOrderForm, OrderItemForm, CouponForm
 from itertools import groupby
 from operator import attrgetter
 from django.urls import reverse
@@ -108,6 +108,10 @@ def place_restaurant_order(request, restaurant_id):
     if request.method == 'POST':
         order_items = request.session.get('order_items', [])
         total_price = Decimal(request.session.get('total_price', 0))
+        restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+
+        # Find the coupon with the highest discount percentage
+        coupon = Coupon.objects.filter(restaurant=restaurant).order_by('-discount_percentage').first()
 
         for key, value in request.POST.items():
             if key.startswith('item_'):
@@ -119,7 +123,8 @@ def place_restaurant_order(request, restaurant_id):
                     total_price += price
                     
                     # Check if item is already in the order_items
-                    existing_item = next((item for item in order_items if item['id'] == item.id), None)
+                    existing_item = next((existing_item for existing_item in order_items if existing_item['id'] == int(item_id)), None)
+
                     if existing_item:
                         existing_item['quantity'] += quantity
                         existing_item['price'] = str(item.price * existing_item['quantity'])  # Update total price for the item
@@ -131,18 +136,30 @@ def place_restaurant_order(request, restaurant_id):
                             'price': str(price)  # Convert price to string
                         })
 
+        # Apply coupon discount if available
+        if coupon:
+            discount = (coupon.discount_percentage / 100) * total_price
+            total_price -= discount
+
         # Store updated order details in session
         request.session['order_items'] = order_items
         request.session['total_price'] = str(total_price)  # Convert total price to string
         request.session['restaurant_id'] = restaurant_id
-        
-        return redirect('confirm_order')  # Redirect to confirmation view
+        request.session['coupon'] = coupon.id if coupon else None  # Store coupon ID if available
 
+        return redirect('confirm_order')
+    
 def confirm_order(request):
     order_items = request.session.get('order_items', [])
     total_price = Decimal(request.session.get('total_price', 0))
     restaurant_id = request.session.get('restaurant_id')
     restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+
+    # Retrieve the coupon ID from the session
+    coupon_id = request.session.get('coupon')
+    coupon = None
+    if coupon_id:
+        coupon = get_object_or_404(Coupon, id=coupon_id)  # Get the coupon object
 
     if request.method == 'POST':
         if 'confirm' in request.POST:
@@ -157,6 +174,7 @@ def confirm_order(request):
             del request.session['order_items']
             del request.session['total_price']
             del request.session['restaurant_id']
+            del request.session['coupon']  # Clear the coupon from the session
             
             return redirect('restaurant_detail', restaurant_id=restaurant.id)
 
@@ -169,13 +187,18 @@ def confirm_order(request):
 
             # Recalculate total price
             total_price = sum(Decimal(item['price']) for item in order_items)
+            if coupon:
+                discount = (coupon.discount_percentage / 100) * total_price
+                total_price -= discount
             request.session['total_price'] = str(total_price)  # Update total price in session
 
-    return render(request, 'restaurant/order_confirmation.html', {
+    context = {
         'order_items': order_items,
         'total_price': total_price,
-        'restaurant': restaurant
-    })
+        'restaurant': restaurant,
+        'coupon': coupon,  # Pass the coupon object to the context
+    }
+    return render(request, 'restaurant/order_confirmation.html', context)
     
 def remove_item(request, item_id):
     order_items = request.session.get('order_items', [])
@@ -221,3 +244,29 @@ def manage_restaurant_orders(request):
         'completed_orders_page': completed_orders_page,
     }
     return render(request, 'restaurant/manage_restaurant_orders.html', context)
+
+def manage_coupons(request):
+    restaurant = get_object_or_404(Restaurant, owner=request.user)
+    coupons = Coupon.objects.filter(restaurant=restaurant)
+
+    if request.method == 'POST':
+        if 'delete_coupon' in request.POST:
+            coupon_id = request.POST.get('coupon_id')
+            coupon = get_object_or_404(Coupon, id=coupon_id, restaurant=restaurant)
+            coupon.delete()  # Delete the coupon
+            return redirect('manage_coupons')  # Redirect to the same page after deletion
+
+        form = CouponForm(request.POST)
+        if form.is_valid():
+            coupon = form.save(commit=False)
+            coupon.restaurant = restaurant  # Associate the coupon with the restaurant
+            coupon.save()
+            return redirect('manage_coupons')  # Redirect to the same page after saving
+    else:
+        form = CouponForm()
+
+    context = {
+        'coupons': coupons,
+        'form': form,
+    }
+    return render(request, 'restaurant/manage_coupons.html', context)

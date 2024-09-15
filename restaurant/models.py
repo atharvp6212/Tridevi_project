@@ -54,3 +54,11 @@ class OrderItem(models.Model):
     menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    
+class Coupon(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='coupons')
+    name = models.CharField(max_length=100, unique=True)
+    discount_percentage = models.DecimalField(max_digits=5, decimal_places=2)  # e.g., 10.00 for 10%
+
+    def __str__(self):
+        return self.name
