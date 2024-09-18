@@ -3,6 +3,7 @@ from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
 from .views import manage_product_list
+from users.views import create_grocery_store
 
 urlpatterns = [
     path('grocery_owner_dashboard/', views.grocery_owner_dashboard, name='grocery_owner_dashboard'),
@@ -18,4 +19,5 @@ urlpatterns = [
     path('grocery/<int:grocery_id>/review/', views.review_order, name='review_order'),
     path('order/<int:order_id>/confirmation/', views.order_confirmation, name='order_confirmation'),
     path('remove-from-cart/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
+    path('create-grocery-store/', create_grocery_store, name='create_grocery_store'),
 ]

@@ -11,13 +11,34 @@ from django.core.paginator import Paginator
 
 @login_required
 def grocery_owner_dashboard(request):
-    grocery_store = GroceryStore.objects.get(owner=request.user)
+    # Attempt to get the grocery store associated with the logged-in user
+    try:
+        grocery_store = GroceryStore.objects.get(owner=request.user)
+    except GroceryStore.DoesNotExist:
+        # Redirect to a page where they can create a grocery store or show an error message
+        return redirect('create_grocery_store')  # Adjust this to your actual URL name for creating a grocery store
+
     form = GroceryStoreForm(instance=grocery_store)
 
     return render(request, 'users/grocery_owner_dashboard.html', {
         'grocery_store': grocery_store,
         'form': form
     })
+    
+@login_required
+def create_grocery_store(request):
+    if request.method == 'POST':
+        form = GroceryStoreForm(request.POST)
+        if form.is_valid():
+            grocery_store = form.save(commit=False)
+            grocery_store.owner = request.user  # Set the owner of the grocery store
+            grocery_store.save()
+            return redirect('grocery_owner_dashboard')  # Redirect after creation
+    else:
+        form = GroceryStoreForm()
+
+    return render(request, 'users/create_grocery_store.html', {'form': form})
+
 
 # Handle grocery info editing
 def edit_grocery_info(request):

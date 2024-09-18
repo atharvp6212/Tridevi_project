@@ -2,6 +2,8 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
+from .views import create_restaurant, create_grocery_store
+
 
 urlpatterns = [
     path('', views.landing_page, name='landing_page'),
@@ -17,4 +19,6 @@ urlpatterns = [
     path('toggle-visibility/', views.toggle_visibility, name='toggle_visibility'), 
     path('edit-profile/', views.edit_profile, name='edit_profile'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('create-restaurant/', create_restaurant, name='create_restaurant'),
+    path('create-grocery-store/', create_grocery_store, name='create_grocery_store'),
 ]

@@ -12,6 +12,7 @@ from django.contrib.auth import logout
 from grocery.models import GroceryStore
 from django.contrib.auth import get_user_model
 from .forms import UserProfileForm
+from grocery.forms import GroceryStoreForm
 
 def landing_page(request):
     return render(request, 'users/landing_page.html')
@@ -123,13 +124,32 @@ def user_dashboard(request):
 
 @login_required
 def restaurant_owner_dashboard(request):
-    restaurant = Restaurant.objects.get(owner=request.user)
+    # Attempt to get the restaurant associated with the logged-in user
+    try:
+        restaurant = Restaurant.objects.get(owner=request.user)
+    except Restaurant.DoesNotExist:
+        # Redirect to a page where they can create a restaurant or show an error message
+        return redirect('create_restaurant')  # Adjust this to your actual URL name for creating a restaurant
+
     form = RestaurantForm(instance=restaurant)
 
     return render(request, 'users/restaurant_owner_dashboard.html', {
         'restaurant': restaurant,
         'form': form
     })
+    
+def create_restaurant(request):
+    if request.method == 'POST':
+        form = RestaurantForm(request.POST)
+        if form.is_valid():
+            restaurant = form.save(commit=False)
+            restaurant.owner = request.user  # Set the owner of the restaurant
+            restaurant.save()
+            return redirect('restaurant_owner_dashboard')  # Redirect after creation
+    else:
+        form = RestaurantForm()
+
+    return render(request, 'users/create_restaurant.html', {'form': form})
 
 # Handle restaurant info editing
 def edit_restaurant_info(request):
@@ -153,7 +173,33 @@ def toggle_visibility(request):
 
 @login_required
 def grocery_owner_dashboard(request):
-    return render(request, 'users/grocery_owner_dashboard.html')
+    # Attempt to get the grocery store associated with the logged-in user
+    try:
+        grocery_store = GroceryStore.objects.get(owner=request.user)
+    except GroceryStore.DoesNotExist:
+        # Redirect to a page where they can create a grocery store or show an error message
+        return redirect('create_grocery_store')  # Adjust this to your actual URL name for creating a grocery store
+
+    form = GroceryStoreForm(instance=grocery_store)
+
+    return render(request, 'users/grocery_owner_dashboard.html', {
+        'grocery_store': grocery_store,
+        'form': form
+    })
+    
+@login_required
+def create_grocery_store(request):
+    if request.method == 'POST':
+        form = GroceryStoreForm(request.POST)
+        if form.is_valid():
+            grocery_store = form.save(commit=False)
+            grocery_store.owner = request.user  # Set the owner of the grocery store
+            grocery_store.save()
+            return redirect('grocery_owner_dashboard')  # Redirect after creation
+    else:
+        form = GroceryStoreForm()
+
+    return render(request, 'users/create_grocery_store.html', {'form': form})
 
 def user_logout(request):
     logout(request)
