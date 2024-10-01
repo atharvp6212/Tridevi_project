@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Your Order</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #FFDFD6; padding: 20px;">
+    <h1 style="color: #694F8E; text-align: center;">Confirm Your Order at {{ restaurant.name }}</h1>
+
+    <h2 style="color: #694F8E;">Order Summary</h2>
+    <form method="POST" style="background-color: #E3A5C7; padding: 20px; border-radius: 10px; border: 1px solid #694F8E; max-width: 600px; margin: 0 auto;">
+        {% csrf_token %}
+        <ul style="list-style-type: none; padding: 0;">
+            {% for item in order_items %}
+                <li style="margin-bottom: 10px; background-color: #FFDFD6; padding: 10px; border: 1px solid #B692C2; border-radius: 5px;">
+                    <span style="color: #694F8E;">{{ item.name }} - Price: ${{ item.price }}</span>
+                    <input type="number" name="quantity_{{ item.id }}" value="{{ item.quantity }}" min="0" required
+                           style="margin-left: 10px; padding: 5px; border: 1px solid #B692C2; border-radius: 3px;">
+                    <a href="{% url 'remove_item' item.id %}" style="color: #B692C2; text-decoration: none; margin-left: 10px;">Remove</a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        {% if coupon %}
+            <p style="color: #694F8E;">Coupon Applied: <strong>{{ coupon.name }}</strong> - {{ coupon.discount_percentage }}% Discount</p>
+            <p><strong style="color: #694F8E;">Discounted Total Price: ${{ total_price }}</strong></p>
+        {% else %}
+            <p><strong style="color: #694F8E;">Total Price: ${{ total_price }}</strong></p>
+        {% endif %}
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button type="submit" name="update" style="background-color: #694F8E; color: #FFFFFF; padding: 10px 20px; border: none; border-radius: 5px; margin-right: 10px; cursor: pointer;">Update Order</button>
+            <button type="submit" name="confirm" style="background-color: #694F8E; color: #FFFFFF; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Confirm Order</button>
+        </div>
+    </form>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="{% url 'restaurant_detail' restaurant.id %}" style="color: #E3A5C7; text-decoration: none; font-weight: bold;">Cancel</a>
+    </div>
+</body>
+</html>

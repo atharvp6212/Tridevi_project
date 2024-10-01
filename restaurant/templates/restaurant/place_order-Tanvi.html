@@ -1,0 +1,20 @@
+<!-- templates/restaurant/place_order.html -->
+<h1 style="color: #694F8E; text-align: center;">Place Order at {{ restaurant.name }}</h1>
+
+<form method="POST" style="background-color: #FFDFD6; padding: 20px; border-radius: 10px; border: 1px solid #E3A5C7; max-width: 600px; margin: 0 auto;">
+    {% csrf_token %}
+    
+    <div style="margin-bottom: 20px;">
+        {{ order_form.as_p }}
+    </div>
+    
+    {% for form in item_forms %}
+        <div style="background-color: #E3A5C7; padding: 15px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #694F8E;">
+            {{ form.as_p }}
+        </div>
+    {% endfor %}
+    
+    <button type="submit" style="background-color: #694F8E; color: #FFFFFF; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; display: block; margin: 0 auto;">
+        Place Order
+    </button>
+</form>
