@@ -4,6 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Product List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FFDFD6;
+            color: #694F8E;
+            padding: 20px;
+        }
+        h2, h3 {
+            color: #694F8E;
+        }
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        li {
+            background-color: #E3A5C7;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        li a {
+            background-color: #694F8E;
+            color: #FFF;
+            padding: 5px 10px;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        li a:hover {
+            background-color: #B692C2;
+        }
+        form {
+            background-color: #E3A5C7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        form input, form select, form button {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #694F8E;
+            border-radius: 4px;
+        }
+        form button {
+            background-color: #694F8E;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #B692C2;
+        }
+        .cancel-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #D9534F;
+        }
+        .cancel-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <h2>Manage Product List</h2>
@@ -13,7 +78,7 @@
     <ul>
         {% for product in products %}
             <li>
-                {{ product.name }} - {{ product.price }} (Stock: {{ product.stock }})
+                <span>{{ product.name }} - ${{ product.price }} (Stock: {{ product.stock }})</span>
                 <a href="?edit={{ product.id }}">Edit</a>
             </li>
         {% empty %}
@@ -31,7 +96,7 @@
 
     <!-- Option to cancel editing and reset the form -->
     {% if editing_product %}
-        <a href="{% url 'manage_product_list' %}">Cancel Editing</a>
+        <a href="{% url 'manage_product_list' %}" class="cancel-link">Cancel Editing</a>
     {% endif %}
 </body>
 </html>

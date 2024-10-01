@@ -1,13 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FFDFD6;
+            color: #694F8E;
+            padding: 20px;
+        }
+        h1 {
+            color: #694F8E;
+            text-align: center;
+        }
+        p, h2, h3 {
+            color: #694F8E;
+        }
+        .order-details, .items-list {
+            background-color: #E3A5C7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        li {
+            background-color: #FFFFFF;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
 <h1>Order Confirmation</h1>
 <p>Thank you for your order!</p>
 
-<h2>Order Details</h2>
-<p>Order Number: {{ order.id }}</p>
-<p>Total Price: ${{ order.total_price }}</p>
+<div class="order-details">
+    <h2>Order Details</h2>
+    <p><strong>Order Number:</strong> {{ order.id }}</p>
+    <p><strong>Total Price:</strong> ${{ order.total_price }}</p>
+</div>
 
-<h3>Items</h3>
-<ul>
-    {% for item in order_items %}
-        <li>{{ item.product.name }} - Quantity: {{ item.quantity }} - Price: ${{ item.price }}</li>
-    {% endfor %}
-</ul>
+<div class="items-list">
+    <h3>Items</h3>
+    <ul>
+        {% for item in order_items %}
+            <li>
+                <span>{{ item.product.name }} - Quantity: {{ item.quantity }}</span>
+                <span>Price: ${{ item.price }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+
+</body>
+</html>

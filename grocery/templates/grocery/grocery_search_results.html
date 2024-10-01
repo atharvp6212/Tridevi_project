@@ -1,11 +1,53 @@
-<h2>Grocery Store Search Results</h2>
+<!-- grocery/grocery_search_results.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grocery Store Search Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FFDFD6; /* Background color */
+            padding: 20px;
+        }
+        h2 {
+            color: #694F8E; /* Heading color */
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #E3A5C7; /* Store name background color */
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        li a {
+            color: #694F8E; /* Link color */
+            text-decoration: none;
+            font-weight: bold;
+        }
+        li a:hover {
+            text-decoration: underline;
+        }
+        p {
+            color: #694F8E; /* Message color */
+        }
+    </style>
+</head>
+<body>
+    <h2>Grocery Store Search Results</h2>
 
-{% if results %}
-    <ul>
-        {% for grocery_store in results %}
-            <li><a href="{% url 'grocery_detail' grocery_store.id %}">{{ grocery_store.name }}</a></li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>No grocery stores found matching your search query.</p>
-{% endif %}
+    {% if results %}
+        <ul>
+            {% for grocery_store in results %}
+                <li><a href="{% url 'grocery_detail' grocery_store.id %}">{{ grocery_store.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No grocery stores found matching your search query.</p>
+    {% endif %}
+</body>
+</html>

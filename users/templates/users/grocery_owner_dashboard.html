@@ -1,43 +1,45 @@
-<h2>Welcome to the Grocery Store Owner Dashboard</h2>
-<p>
-    <a href="{% url 'logout' %}">Logout</a>
+<h2 style="color: #694F8E; text-align: center; margin-bottom: 20px;">Welcome to the Grocery Store Owner Dashboard</h2>
+<p style="text-align: center;">
+    <a href="{% url 'logout' %}" style="color: #B692C2; text-decoration: none;">Logout</a>
 </p>
-<p>
-    <a href="{% url 'manage_product_list' %}">Update Item List</a>
+<p style="text-align: center;">
+    <a href="{% url 'manage_product_list' %}" style="color: #B692C2; text-decoration: none;">Update Item List</a>
 </p>
 
-<h2>Manage Orders</h2>
-<a href="{% url 'manage_grocery_orders' %}">View and Manage Orders</a>
+<h2 style="color: #694F8E; margin-top: 30px;">Manage Orders</h2>
+<p style="text-align: center;">
+    <a href="{% url 'manage_grocery_orders' %}" style="color: #B692C2; text-decoration: none;">View and Manage Orders</a>
+</p>
 
-<!-- Separate form for toggling visibility -->
-<h3>Visibility Settings</h3>
-<form method="POST" action="{% url 'toggle_grocery_visibility' %}">
+<h3 style="color: #694F8E; margin-top: 30px;">Visibility Settings</h3>
+<form method="POST" action="{% url 'toggle_grocery_visibility' %}" style="text-align: center;">
     {% csrf_token %}
     <p>
-        <label for="is_visible">Visible to Customers:</label>
+        <label for="is_visible" style="color: #694F8E;">Visible to Customers:</label>
         <input type="checkbox" name="is_visible" id="is_visible" {% if grocery_store.is_visible %}checked{% endif %}>
     </p>
-    <button type="submit">Update Visibility</button>
+    <button type="submit" style="background-color: #694F8E; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+        Update Visibility
+    </button>
 </form>
 
 {% if grocery_store %}
-    <h4>Current Information:</h4>
+    <h4 style="color: #694F8E; margin-top: 30px;">Current Information:</h4>
     <p><strong>Name:</strong> {{ grocery_store.name }}</p>
     <p><strong>Phone:</strong> {{ grocery_store.phone }}</p>
     <p><strong>Address:</strong> {{ grocery_store.address }}</p>
     <p><strong>Type:</strong> {{ grocery_store.store_type }}</p>
     {% if grocery_store.logo %}
-        <img src="{{ grocery_store.logo.url }}" alt="Store Logo" style="max-width: 200px;">
+        <img src="{{ grocery_store.logo.url }}" alt="Store Logo" style="max-width: 200px; display: block; margin: 20px auto;">
     {% endif %}
 {% endif %}
 
-<h3>Edit Store Information</h3>
-<form method="POST" enctype="multipart/form-data" action="{% url 'edit_grocery_info' %}">
+<h3 style="color: #694F8E; margin-top: 30px;">Edit Store Information</h3>
+<form method="POST" enctype="multipart/form-data" action="{% url 'edit_grocery_info' %}" style="text-align: center;">
     {% csrf_token %}
     {{ form.as_p }}
-
-
-    <button type="submit">Save</button>
+    <button type="submit" style="background-color: #694F8E; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+        Save
+    </button>
 </form>
-
 

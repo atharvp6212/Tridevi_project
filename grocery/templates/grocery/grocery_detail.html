@@ -1,24 +1,84 @@
 <!-- grocery/grocery_detail.html -->
-<h1>{{ grocery_store.name }}</h1>
-<p>{{ grocery_store.description }}</p>
-<p><strong>Address:</strong> {{ grocery_store.address }}</p>
-<p>Gold Membership: {% if grocery_store.is_gold %} Available {% else %} Not Available {% endif %}</p>
-<p>Working Hours: {{ grocery_store.working_hours }}</p>
-<a href="{% url 'grocery_reviews' grocery_store.id %}">Reviews</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ grocery_store.name }} - Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FFDFD6; /* Background color */
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #694F8E; /* Heading color */
+        }
+        p {
+            color: #333;
+            margin: 10px 0;
+        }
+        a {
+            color: #B692C2; /* Link color */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        input[type="number"] {
+            width: 60px;
+        }
+        button {
+            background-color: #694F8E; /* Button color */
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #B692C2; /* Button hover effect */
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ grocery_store.name }}</h1>
+    <p>{{ grocery_store.description }}</p>
+    <p><strong>Address:</strong> {{ grocery_store.address }}</p>
+    <p><strong>Gold Membership:</strong> {% if grocery_store.is_gold %} Available {% else %} Not Available {% endif %}</p>
+    <p><strong>Working Hours:</strong> {{ grocery_store.working_hours }}</p>
+    <p><a href="{% url 'grocery_reviews' grocery_store.id %}">View Reviews</a></p>
 
-<h2>Products</h2>
-<form method="POST" action="{% url 'review_order' grocery_id=grocery_store.id %}">
-    {% csrf_token %}
-    <h2>Order from {{ grocery_store.name }}</h2>
-    <ul>
-        {% for product in products %}
-            <li>
-                <label>{{ product.name }} - ${{ product.price }}
-                    <input type="hidden" name="product_{{ product.id }}" value="{{ product.id }}">
-                    <input type="number" name="quantity_{{ product.id }}" placeholder="Quantity" min="0" value="0" required>
-                </label>
-            </li>
-        {% endfor %}
-    </ul>
-    <button type="submit">Add to Cart</button>
-</form>
+    <h2>Products</h2>
+    <form method="POST" action="{% url 'review_order' grocery_id=grocery_store.id %}">
+        {% csrf_token %}
+        <h3>Order from {{ grocery_store.name }}</h3>
+        <ul>
+            {% for product in products %}
+                <li>
+                    <label>
+                        {{ product.name }} - ${{ product.price }}
+                        <div>
+                            <input type="hidden" name="product_{{ product.id }}" value="{{ product.id }}">
+                            <input type="number" name="quantity_{{ product.id }}" placeholder="Quantity" min="0" value="0" required>
+                        </div>
+                    </label>
+                </li>
+            {% endfor %}
+        </ul>
+        <button type="submit">Add to Cart</button>
+    </form>
+</body>
+</html>

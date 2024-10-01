@@ -1,72 +1,129 @@
 <!-- grocery/templates/grocery/manage_grocery_orders.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Grocery Orders</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FFDFD6;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #694F8E;
+        }
+        .order-container {
+            border: 1px solid #E3A5C7;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background-color: #E3A5C7;
+        }
+        .order-container ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .order-container li {
+            background-color: #B692C2;
+            padding: 5px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        .order-container p {
+            margin: 5px 0;
+        }
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .pagination a, .pagination span {
+            padding: 8px 12px;
+            margin: 0 5px;
+            background-color: #694F8E;
+            color: #fff;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        .pagination span.current {
+            background-color: #B692C2;
+        }
+        .pagination a:hover {
+            background-color: #E3A5C7;
+        }
+    </style>
+</head>
+<body>
 
-<h1>Manage Grocery Orders</h1>
+    <h1>Manage Grocery Orders</h1>
 
-<div style="display: flex;">
-    <!-- Pending Orders Section -->
-    <div style="flex: 1; padding-right: 20px;">
-        <h2>Pending Orders</h2>
-        {% for order, items in pending_orders %}
-            <div>
-                <p>Order ID: {{ order.id }}</p>
-                <p>Customer: {{ order.customer.username }}</p>
-                <p>Total Price: ${{ order.total_price }}</p>
-                <p>Order Date: {{ order.order_date }}</p>
-                <ul>
-                    {% for item in items %}
-                        <li>{{ item.product.name }} - Quantity: {{ item.quantity }}</li>
-                    {% endfor %}
-                </ul>
-                <form method="POST" action="{% url 'manage_grocery_orders' %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="order_id" value="{{ order.id }}">
-                    <button type="submit" name="action" value="accept">Accept</button>
-                    <button type="submit" name="action" value="reject">Reject</button>
-                </form>
-            </div>
-        {% empty %}
-            <p>No pending orders.</p>
-        {% endfor %}
-    </div>
-
-    <!-- Completed Orders Section -->
-    <!-- ... -->
-
-<div style="flex: 1;">
-    <h2>Completed Orders</h2>
-    {% for order, items in completed_orders %}
-        <div>
-            <p>Order ID: {{ order.id }}</p>
-            <p>Customer: {{ order.customer.username }}</p>
-            <p>Total Price: ${{ order.total_price }}</p>
-            <p>Order Date: {{ order.order_date }}</p>
-            <ul>
-                {% for item in items %}
-                    <li>{{ item.product.name }} - Quantity: {{ item.quantity }}</li>
-                {% endfor %}
-            </ul>
+    <div style="display: flex; gap: 20px;">
+        <!-- Pending Orders Section -->
+        <div style="flex: 1;">
+            <h2>Pending Orders</h2>
+            {% for order, items in pending_orders %}
+                <div class="order-container">
+                    <p><strong>Order ID:</strong> {{ order.id }}</p>
+                    <p><strong>Customer:</strong> {{ order.customer.username }}</p>
+                    <p><strong>Total Price:</strong> ${{ order.total_price }}</p>
+                    <p><strong>Order Date:</strong> {{ order.order_date }}</p>
+                    <ul>
+                        {% for item in items %}
+                            <li>{{ item.product.name }} - Quantity: {{ item.quantity }}</li>
+                        {% endfor %}
+                    </ul>
+                    <form method="POST" action="{% url 'manage_grocery_orders' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="order_id" value="{{ order.id }}">
+                        <button type="submit" name="action" value="accept" style="background-color: #694F8E; color: white; padding: 8px 12px; border-radius: 4px;">Accept</button>
+                        <button type="submit" name="action" value="reject" style="background-color: #D9534F; color: white; padding: 8px 12px; border-radius: 4px;">Reject</button>
+                    </form>
+                </div>
+            {% empty %}
+                <p>No pending orders.</p>
+            {% endfor %}
         </div>
-    {% empty %}
-        <p>No completed orders.</p>
-    {% endfor %}
 
-    <!-- Pagination -->
-    <div class="pagination">
-        <span class="step-links">
-            {% if completed_orders_page.has_previous %}
-                <a href="?page=1">&laquo; First</a>
-                <a href="?page={{ completed_orders_page.previous_page_number }}">Previous</a>
-            {% endif %}
+        <!-- Completed Orders Section -->
+        <div style="flex: 1;">
+            <h2>Completed Orders</h2>
+            {% for order, items in completed_orders %}
+                <div class="order-container">
+                    <p><strong>Order ID:</strong> {{ order.id }}</p>
+                    <p><strong>Customer:</strong> {{ order.customer.username }}</p>
+                    <p><strong>Total Price:</strong> ${{ order.total_price }}</p>
+                    <p><strong>Order Date:</strong> {{ order.order_date }}</p>
+                    <ul>
+                        {% for item in items %}
+                            <li>{{ item.product.name }} - Quantity: {{ item.quantity }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% empty %}
+                <p>No completed orders.</p>
+            {% endfor %}
 
-            <span class="current">
-                Page {{ completed_orders_page.number }} of {{ completed_orders_page.paginator.num_pages }}.
-            </span>
+            <!-- Pagination -->
+            <div class="pagination">
+                <span class="step-links">
+                    {% if completed_orders_page.has_previous %}
+                        <a href="?page=1">&laquo; First</a>
+                        <a href="?page={{ completed_orders_page.previous_page_number }}">Previous</a>
+                    {% endif %}
 
-            {% if completed_orders_page.has_next %}
-                <a href="?page={{ completed_orders_page.next_page_number }}">Next</a>
-                <a href="?page={{ completed_orders_page.paginator.num_pages }}">Last &raquo;</a>
-            {% endif %}
-        </span>
+                    <span class="current">
+                        Page {{ completed_orders_page.number }} of {{ completed_orders_page.paginator.num_pages }}.
+                    </span>
+
+                    {% if completed_orders_page.has_next %}
+                        <a href="?page={{ completed_orders_page.next_page_number }}">Next</a>
+                        <a href="?page={{ completed_orders_page.paginator.num_pages }}">Last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
     </div>
-</div>
-</div>
+    
+</body>
+</html>

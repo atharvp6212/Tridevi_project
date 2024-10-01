@@ -1,4 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Order - {{ grocery_store.name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FFDFD6;
+            color: #694F8E;
+            padding: 20px;
+        }
+        h1 {
+            color: #694F8E;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #E3A5C7;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+        }
+        a {
+            color: #694F8E;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        button {
+            background-color: #694F8E;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #B692C2;
+        }
+    </style>
+</head>
+<body>
+
 <h1>Review Your Order from {{ grocery_store.name }}</h1>
+
 <form method="POST" action="{% url 'place_grocery_order' grocery_id=grocery_store.id %}">
     {% csrf_token %}
     <table>
@@ -18,13 +77,16 @@
                         <input type="number" name="quantity_{{ product.id }}" value="{{ quantity }}" min="0" required>
                     </td>
                     <td>${{ price }}</td>
-                    <td>
-                        <a href="{% url 'remove_from_cart' product.id %}">Remove</a>
-                    </td>
+                    <td><a href="{% url 'remove_from_cart' product.id %}">Remove</a></td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    
     <p><strong>Total Price: ${{ total_price }}</strong></p>
+    
     <button type="submit">Place Order</button>
 </form>
+
+</body>
+</html>

@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Your Restaurant</title>
 </head>
-<body>
-    <h1>Create Your Restaurant</h1>
-    <form method="POST">
+<body style="background-color: #FFDFD6; font-family: Arial, sans-serif; padding: 20px; text-align: center;">
+    <h1 style="color: #694F8E; margin-bottom: 20px;">Create Your Restaurant</h1>
+
+    <form method="POST" style="background-color: #E3A5C7; padding: 20px; border-radius: 10px; max-width: 500px; margin: 0 auto;">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Create Restaurant</button>
+        <button type="submit" style="background-color: #694F8E; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+            Create Restaurant
+        </button>
     </form>
 </body>
 </html>

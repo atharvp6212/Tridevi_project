@@ -5,30 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Menu</title>
 </head>
-<body>
-    <h2>Manage Menu</h2>
+<body style="font-family: Arial, sans-serif; background-color: #FFDFD6; padding: 20px;">
+    <h2 style="color: #694F8E; text-align: center; margin-bottom: 20px;">Manage Menu</h2>
 
-    <h3>Current Menu Items</h3>
-    <ul>
+    <h3 style="color: #694F8E;">Current Menu Items</h3>
+    <ul style="background-color: #E3A5C7; padding: 15px; border-radius: 10px; list-style-type: none;">
         {% for item in menu_items %}
-            <li>
-                {{ item.name }} - {{ item.price }} ({{ item.is_veg|yesno:"Veg,Non-Veg" }}) - {{ item.category }}
-                <a href="{% url 'manage_menu_edit' item.id %}">Edit</a>  <!-- Edit link -->
+            <li style="padding: 10px; border-bottom: 1px solid #B692C2; display: flex; justify-content: space-between;">
+                <span style="color: #694F8E;">
+                    {{ item.name }} - ${{ item.price }} ({{ item.is_veg|yesno:"Veg,Non-Veg" }}) - {{ item.category }}
+                </span>
+                <a href="{% url 'manage_menu_edit' item.id %}" style="color: #B692C2; text-decoration: none;">Edit</a>
             </li>
         {% empty %}
-            <li>No menu items available.</li>
+            <li style="color: #B692C2;">No menu items available.</li>
         {% endfor %}
     </ul>
 
-    <h3>{% if editing_item %}Edit Menu Item{% else %}Add New Menu Item{% endif %}</h3>
-    <form method="POST">
+    <h3 style="color: #694F8E; margin-top: 30px;">
+        {% if editing_item %}Edit Menu Item{% else %}Add New Menu Item{% endif %}
+    </h3>
+    <form method="POST" style="background-color: #E3A5C7; padding: 20px; border-radius: 10px; max-width: 600px;">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">{% if editing_item %}Save Changes{% else %}Add Item{% endif %}</button>
+        <button type="submit" style="background-color: #694F8E; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+            {% if editing_item %}Save Changes{% else %}Add Item{% endif %}
+        </button>
     </form>
 
     {% if editing_item %}
-        <a href="{% url 'manage_menu' %}">Cancel Edit</a>  <!-- Option to cancel editing -->
+        <a href="{% url 'manage_menu' %}" style="display: inline-block; margin-top: 10px; color: #B692C2; text-decoration: none;">Cancel Edit</a>
     {% endif %}
 </body>
 </html>
