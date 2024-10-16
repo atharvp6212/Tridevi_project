@@ -1,16 +1,20 @@
-<h1>Reviews for {{ restaurant.name }}</h1>
+<h1 style="color: #694F8E; text-align: center;">Reviews for {{ restaurant.name }}</h1>
 
-<ul>
+<ul style="list-style-type: none; padding: 0;">
     {% for review in reviews %}
-        <li>{{ review.customer.username }}: {{ review.review_text }} (Rating: {{ review.rating }}/5)</li>
+        <li style="margin: 10px 0; background-color: #FFDFD6; padding: 10px; border: 1px solid #E3A5C7; border-radius: 5px;">
+            <strong style="color: #694F8E;">{{ review.customer.username }}</strong>: 
+            <span>{{ review.review_text }}</span>
+            <em style="color: #B692C2;">(Rating: {{ review.rating }}/5)</em>
+        </li>
     {% empty %}
-        <li>No reviews yet.</li>
+        <li style="color: #B692C2; font-style: italic;">No reviews yet.</li>
     {% endfor %}
 </ul>
 
-<h2>Add a Review</h2>
-<form method="POST">
+<h2 style="color: #694F8E;">Add a Review</h2>
+<form method="POST" style="background-color: #FFDFD6; padding: 15px; border-radius: 5px; border: 1px solid #E3A5C7;">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Submit Review</button>
+    <button type="submit" style="background-color: #694F8E; color: #FFFFFF; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer;">Submit Review</button>
 </form>

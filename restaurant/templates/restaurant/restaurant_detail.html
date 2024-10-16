@@ -5,31 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ restaurant.name }} - Details</title>
 </head>
-<body>
-    <h1>{{ restaurant.name }}</h1>
-    <p>{{ restaurant.description }}</p>
-    <p><strong>Address:</strong> {{ restaurant.address }}</p>
-    <p>Gold Membership: {% if restaurant.offers_gold %} Available {% else %} Not Available {% endif %}</p>
-    <p>Working Hours: {{ restaurant.working_hours }}</p>
-    <a href="{% url 'restaurant_reviews' restaurant.id %}">Reviews</a>
+<body style="font-family: Arial, sans-serif; background-color: #FFDFD6; margin: 20px; padding: 20px; border: 1px solid #E3A5C7; border-radius: 10px;">
+    <h1 style="color: #694F8E; text-align: center;">{{ restaurant.name }}</h1>
 
-    <h2>Menu</h2>
-    <form method="POST" action="{% url 'place_restaurant_order' restaurant.id %}">
+    <p style="color: #694F8E;">{{ restaurant.description }}</p>
+    <p><strong style="color: #694F8E;">Address:</strong> {{ restaurant.address }}</p>
+    <p><strong style="color: #694F8E;">Gold Membership:</strong> 
+        {% if restaurant.offers_gold %} 
+            <span style="color: #B692C2;">Available</span> 
+        {% else %} 
+            <span style="color: #B692C2;">Not Available</span> 
+        {% endif %}
+    </p>
+    <p><strong style="color: #694F8E;">Working Hours:</strong> {{ restaurant.working_hours }}</p>
+    
+    <a href="{% url 'restaurant_reviews' restaurant.id %}" 
+       style="color: #E3A5C7; text-decoration: none; font-weight: bold; border: 1px solid #694F8E; padding: 5px 10px; border-radius: 5px;">Reviews</a>
+
+    <h2 style="color: #694F8E; margin-top: 20px;">Menu</h2>
+    <form method="POST" action="{% url 'place_restaurant_order' restaurant.id %}" 
+          style="background-color: #E3A5C7; padding: 20px; border-radius: 10px; border: 1px solid #694F8E;">
         {% csrf_token %}
         {% for category, items in grouped_menu_items.items %}
-            <h3>{{ category }}</h3>
-            <ul>
+            <h3 style="color: #694F8E;">{{ category }}</h3>
+            <ul style="list-style-type: none; padding: 0;">
                 {% for item in items %}
-                    <li>
-                        {{ item.name }} - ${{ item.price }}{% if item.is_veg %} (Veg){% else %} (Non-Veg){% endif %}
-                        <input type="number" name="item_{{ item.id }}" min="0" placeholder="Quantity" value="0">
+                    <li style="margin: 10px 0; background-color: #FFDFD6; padding: 10px; border: 1px solid #B692C2; border-radius: 5px;">
+                        <span style="color: #694F8E;">{{ item.name }} - ${{ item.price }}{% if item.is_veg %} (Veg){% else %} (Non-Veg){% endif %}</span>
+                        <input type="number" name="item_{{ item.id }}" min="0" placeholder="Quantity" value="0"
+                               style="margin-left: 10px; padding: 5px; border: 1px solid #B692C2; border-radius: 3px;">
                     </li>
                 {% endfor %}
             </ul>
         {% empty %}
-            <p>No menu items available.</p>
+            <p style="color: #B692C2;">No menu items available.</p>
         {% endfor %}
-        <button type="submit">Add to Cart</button>
+        <button type="submit" 
+                style="background-color: #694F8E; color: #FFFFFF; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">
+            Add to Cart
+        </button>
     </form>
 </body>
 </html>

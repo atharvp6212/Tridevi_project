@@ -42,91 +42,147 @@
         .restaurant-item {
             margin: 5px 0;
         }
+        /* Flexbox layout for the top bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        /* Styling for the toggle switch with text labels */
+        .toggle-switch-wrapper {
+            display: flex;
+            align-items: center;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin: 0 10px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: #694F8E;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #694F8E;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Text labels for modes */
+        .mode-label {
+            font-weight: bold;
+            color: #694F8E;
+        }
+
+        /* Logout link styling */
+        .logout-link {
+            color: #B692C2;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    <h2>Welcome, {{ user.first_name }}!</h2>
+    
+    <!-- Top bar containing toggle switch and logout -->
+    <div class="top-bar">
+        <h2>Welcome, {{ user.first_name }}!</h2>
+        <!-- Toggle Switch for switching between modes -->
+        <div class="toggle-switch-wrapper">
+            <span class="mode-label">Restaurant Mode</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="modeSwitch" {% if mode == 'grocery' %} checked {% endif %}>
+                <span class="slider"></span>
+            </label>
+            <span class="mode-label">Grocery Mode</span>
+        </div>
 
+        <!-- Logout text -->
+        <div>
+            <a href="{% url 'logout' %}" class="logout-link">Logout</a>
+        </div>
+    </div>
+
+    
+
+    <!-- Profile Picture Section -->
     {% if user.profile_picture %}
         <img src="{{ user.profile_picture.url }}" alt="Profile Picture" style="max-width: 150px; max-height: 150px;">
     {% else %}
         <p>No profile picture set.</p>
     {% endif %}
 
-    <p><a href="{% url 'logout' %}">Logout</a></p>
-
+    <!-- Edit Profile Button -->
     <div>
         <a href="{% url 'edit_profile' %}"><button>Edit Information</button></a>
     </div>
 
-    <!-- Switch Mode Buttons -->
-    <div>
-        <a href="?mode=restaurant"><button>Switch to Restaurant Mode</button></a>
-        <a href="?mode=grocery"><button>Switch to Grocery Mode</button></a>
-    </div>
-
-    <!-- Display the List of Available and Visible Restaurants -->
+    <!-- Display Restaurants or Grocery Stores based on mode -->
     {% if mode == 'restaurant' %}
         <h3>Available Restaurants:</h3>
-
-        <!-- Search Form -->
         <form method="GET" action="{% url 'restaurant_search' %}">
             <input type="text" name="q" placeholder="Search for restaurants...">
             <button type="submit">Search</button>
         </form>
-
-        <!-- Veg-Only Filter Checkbox -->
-        <label>
-            <input type="checkbox" id="vegOnlyCheckbox"> Show Veg Only
-        </label>
-
-        <!-- Restaurant List -->
-        {% if restaurants %}
-            <ul id="restaurantList">
-                {% for restaurant in restaurants %}
-                    <li class="restaurant-item" data-veg="{{ restaurant.veg|yesno:'True,False' }}">
-                        <a href="{% url 'restaurant_detail' restaurant.id %}">{{ restaurant.name }}</a>
-                        {% if restaurant.veg %}
-                            <span>(Veg)</span>
-                        {% elif restaurant.non_veg %}
-                            <span>(Non-Veg)</span>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No restaurants available at the moment.</p>
-        {% endif %}
-    {% endif %}
-
-    <!-- Display the List of Available and Visible Grocery Stores -->
-    {% if mode == 'grocery' %}
+        <ul id="restaurantList">
+            {% for restaurant in restaurants %}
+                <li class="restaurant-item" data-veg="{{ restaurant.veg|yesno:'True,False' }}">
+                    <a href="{% url 'restaurant_detail' restaurant.id %}">{{ restaurant.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
         <h3>Available Grocery Stores:</h3>
         <form method="GET" action="{% url 'grocery_search' %}">
             <input type="text" name="q" placeholder="Search for grocery stores...">
             <button type="submit">Search</button>
         </form>
-        {% if grocery_stores %}
-            <ul>
-                {% for store in grocery_stores %}
-                    <li><a href="{% url 'grocery_detail' store.id %}">{{ store.name }}</a></li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No grocery stores available at the moment.</p>
-        {% endif %}
+        <ul>
+            {% for store in grocery_stores %}
+                <li><a href="{% url 'grocery_detail' store.id %}">{{ store.name }}</a></li>
+            {% endfor %}
+        </ul>
     {% endif %}
 
     <script>
-        // JavaScript to handle veg-only filtering
-        document.getElementById('vegOnlyCheckbox').addEventListener('change', function() {
-            const vegOnly = this.checked;
-            const restaurantItems = document.querySelectorAll('.restaurant-item');
-
-            restaurantItems.forEach(function(item) {
-                const isVeg = item.getAttribute('data-veg') === 'True';
-                item.style.display = (vegOnly && !isVeg) ? 'none' : '';
-            });
+        // Toggle between modes using the switch
+        document.getElementById('modeSwitch').addEventListener('change', function() {
+            if (this.checked) {
+                window.location.href = '?mode=grocery';
+            } else {
+                window.location.href = '?mode=restaurant';
+            }
         });
     </script>
 </body>

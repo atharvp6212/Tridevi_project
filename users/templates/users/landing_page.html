@@ -7,53 +7,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Landing Page</title>
     <style>
-        body {
-            background-image: url("{% static 'images/bg.jpg' %}");
-            object-fit: cover;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #FFDFD6; /* Background color */
-        }
-        .container {
-            display: flex;
-            justify-content: space-around;
-            width: 80%;
-        }
-        .section {
-            border: 1px solid #ccc;
-            padding: 20px;
-            width: 45%;
-            text-align: center;
-            background-color: #E3A5C7; /* Section background color */
-            border-radius: 10px; /* Rounded corners */
-        }
-        .section h2 {
-            margin-bottom: 20px;
-            color: #694F8E; /* Heading color */
-        }
-        .section button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 16px;
-            background-color: #694F8E; /* Button background color */
-            color: white; /* Button text color */
-            border: none;
-            border-radius: 5px; /* Rounded button corners */
-            cursor: pointer;
-        }
-        .section button:hover {
-            background-color: #B692C2; /* Button hover effect */
-        }
-    </style>
+    body {
+        background-image: url("{% static 'images/bg2.jpg' %}");
+        background-size: cover; 
+        background-position: center; 
+        font-family: Arial, sans-serif;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0; 
+    }
+    .container {
+        display: flex;
+        justify-content: space-between; 
+        align-items: center; 
+        width: 60%; 
+        height: 100vh; 
+        margin: 0 auto; 
+        margin-right: 10px;
+    }
+    .section {
+        border: 1px solid #ccc;
+        padding: 20px;
+        width: 45%; 
+        text-align: center;
+        background-color: #E3A5C7; 
+        border-radius: 10px;
+    }
+    .section h2 {
+        margin-bottom: 20px;
+        color: #694F8E;
+    }
+    .section button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        font-size: 16px;
+        background-color: #694F8E; 
+        color: white; 
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .section button:hover {
+        background-color: #E3A5C7;
+    }
+
+    .header {
+        color: #694F8E;
+        font-family: cursive; 
+        font-style: Bradley Hand;
+        font-size: 50px; 
+        text-align: center;
+        margin-top: 200px;
+        margin-bottom: -150px;
+        margin-left: 850px;
+    }
+
+</style>
 </head>
 <body>
-    <div class="container">
+    <h1 class="header">
+            Spice Up Your Day with <br> Flavors that Slay!
+        </h1>
+    <div class="container">    
+
         <div class="section">
             <h2>User</h2>
             <button onclick="location.href='{% url 'register_user' %}'">Register</button>

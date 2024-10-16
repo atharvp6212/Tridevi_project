@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Registration</title>
     <style>
         body {
+            background-image: url("{% static 'images/bg2.jpg' %}");
             font-family: Arial, sans-serif;
-            background-color: #FFDFD6; /* Background color */
+            background-size: cover; 
+            background-position: center; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -15,14 +18,17 @@
             margin: 0;
             text-align: center;
         }
+      
         h2 {
-            color: #694F8E; /* Heading color */
+            color: black; /* Heading color */
             margin-bottom: 20px;
+            font-size: 40px;
         }
         form {
             background-color: #E3A5C7; /* Form background color */
             padding: 20px;
             border-radius: 10px; /* Rounded corners */
+            margin-right: -600px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
             width: 300px; /* Fixed width for form */
         }
@@ -41,7 +47,7 @@
     </style>
 </head>
 <body>
-    <h2>User Registration</h2>
+    <h2>User <br> Registration</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
