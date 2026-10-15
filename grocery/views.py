@@ -8,6 +8,8 @@ from .forms import ProductForm, GroceryReviewForm,GroceryOrderForm, GroceryOrder
 from .models import GroceryStore,GroceryOrder, GroceryOrderItem
 from .forms import GroceryOrderForm, GroceryOrderItemForm
 from django.core.paginator import Paginator
+from django.core.exceptions import ValidationError
+from .services import create_grocery_order
 
 @login_required
 def grocery_owner_dashboard(request):
@@ -24,7 +26,7 @@ def grocery_owner_dashboard(request):
         'grocery_store': grocery_store,
         'form': form
     })
-    
+
 @login_required
 def create_grocery_store(request):
     if request.method == 'POST':
@@ -141,26 +143,26 @@ def grocery_search(request):
 def place_grocery_order(request, grocery_id):
     if request.method == 'POST':
         grocery_store = get_object_or_404(GroceryStore, id=grocery_id)
-        order = GroceryOrder.objects.create(customer=request.user, store=grocery_store)
-
-        total_price = 0
+        quantities = {}
         for key, value in request.POST.items():
             if key.startswith('quantity_'):
                 product_id = key.split('_')[1]
-                quantity = int(value)
-
-                product = get_object_or_404(Product, id=product_id)
-                price = product.price * quantity
-                total_price += price
-                GroceryOrderItem.objects.create(order=order, product=product, quantity=quantity, price=price)
-
-        order.total_price = total_price
-        order.save()
-
+                quantities[int(product_id)] = int(value or 0)
+        try:
+            order = create_grocery_order(
+                customer=request.user, store=grocery_store, quantities=quantities
+            )
+        except ValidationError as exc:
+            return render(request, 'grocery/grocery_detail.html', {
+                'grocery_store': grocery_store,
+                'products': Product.objects.filter(grocery_store=grocery_store, stock__gt=0),
+                'reviews': GroceryReview.objects.filter(grocery_store=grocery_store),
+                'order_error': exc.message,
+            }, status=400)
         return redirect('order_confirmation', order_id=order.id)
-    
+
     return redirect('grocery_detail', grocery_id=grocery_id)
-    
+
 
 def review_order(request, grocery_id):
     if request.method == 'POST':
@@ -204,13 +206,13 @@ def remove_from_cart(request, product_id):
         order_item = get_object_or_404(GroceryOrderItem, order=order, product_id=product_id)
         order_item.delete()
         return redirect('review_order', grocery_id=order.store.id)
-    
+
     return redirect('grocery_detail', grocery_id=order.store.id)
 
-    
+
 def manage_grocery_orders(request):
     store = get_object_or_404(GroceryStore, owner=request.user)
-    
+
     pending_orders = GroceryOrder.objects.filter(store=store, status='Pending')
     completed_orders = GroceryOrder.objects.filter(store=store, status='Completed').order_by('-order_date')
 
@@ -228,7 +230,7 @@ def manage_grocery_orders(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         action = request.POST.get('action')
-        
+
         if order_id and action in ['accept', 'reject']:
             order = get_object_or_404(GroceryOrder, id=order_id, store=store)
             if action == 'accept':
@@ -237,9 +239,9 @@ def manage_grocery_orders(request):
             elif action == 'reject':
                 GroceryOrderItem.objects.filter(order=order).delete()  # Delete related order items
                 order.delete()  # Now delete the order
-            
+
             return redirect('manage_grocery_orders')  # Redirect to refresh the page
-    
+
     context = {
         'pending_orders': pending_order_items,
         'completed_orders': completed_order_items,

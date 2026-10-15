@@ -45,9 +45,24 @@ class GroceryOrder(models.Model):
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     order_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, default='Pending')  # e.g., Pending, Completed
+    idempotency_key = models.CharField(max_length=64, unique=True, null=True, blank=True)
 
 class GroceryOrderItem(models.Model):
     order = models.ForeignKey(GroceryOrder, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)  # Updated to use Product
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
+
+
+class OrderEvent(models.Model):
+    order = models.ForeignKey(GroceryOrder, on_delete=models.CASCADE, related_name='events')
+    event_type = models.CharField(max_length=40)
+    payload = models.JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class OutboxEvent(models.Model):
+    topic = models.CharField(max_length=100)
+    payload = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    processed_at = models.DateTimeField(null=True, blank=True)

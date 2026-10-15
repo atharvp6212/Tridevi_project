@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '*1di_%pk61dc*74rq06+$uubttyh27i29oz3d&1&$$i=1&zhmy'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'development-only-change-me')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', 'true').lower() == 'true'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [host for host in os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',') if host]
 
 
 # Application definition
@@ -135,6 +136,7 @@ LOGIN_REDIRECT_URL = 'landing_page'
 LOGOUT_REDIRECT_URL = 'landing_page'
 
 LOGIN_URL = '/users/login/'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 
 
