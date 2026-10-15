@@ -12,6 +12,10 @@ and order creation, line-item insertion and inventory reservation commit as one
 unit. Invalid cross-store products and insufficient stock are rejected without
 leaving partial orders behind.
 
+Retries can now carry an idempotency key, and each successful checkout records
+both an immutable order event and a transactional outbox event. An explainable
+distance-and-workload delivery-assignment baseline is included for experiments.
+
 This design demonstrates an important systems property: concurrent requests
 must preserve inventory invariants, not merely succeed individually.
 
@@ -26,9 +30,12 @@ python manage.py test
 python manage.py runserver
 ```
 
-## Future evaluation
+## Evaluation roadmap
 
 - Concurrent checkout tests on PostgreSQL
 - Indexed search and cache hit-rate measurements
 - Delivery assignment strategies and workload balance
 - Load testing with latency percentiles and database-query counts
+
+See `ARCHITECTURE.md` for the failure model and `LIMITATIONS.md` before drawing
+production conclusions.

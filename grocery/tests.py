@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from .models import GroceryOrder, GroceryStore, Product
+from .models import GroceryOrder, GroceryStore, OrderEvent, OutboxEvent, Product
 from .services import create_grocery_order
 
 
@@ -36,3 +36,18 @@ class TransactionalOrderingTests(TestCase):
         self.product.refresh_from_db()
         self.assertEqual(self.product.stock, 5)
         self.assertFalse(GroceryOrder.objects.exists())
+
+    def test_idempotent_retry_does_not_charge_stock_twice(self):
+        first = create_grocery_order(
+            customer=self.customer, store=self.store,
+            quantities={self.product.id: 2}, idempotency_key='request-123',
+        )
+        second = create_grocery_order(
+            customer=self.customer, store=self.store,
+            quantities={self.product.id: 2}, idempotency_key='request-123',
+        )
+        self.product.refresh_from_db()
+        self.assertEqual(first.id, second.id)
+        self.assertEqual(self.product.stock, 3)
+        self.assertEqual(OrderEvent.objects.count(), 1)
+        self.assertEqual(OutboxEvent.objects.count(), 1)
